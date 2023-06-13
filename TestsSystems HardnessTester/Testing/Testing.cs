@@ -34,6 +34,10 @@ namespace TestsSystems_HardnessTester
             tests.Add(test);
         }
 
+        public List<Test> GetTests()
+        {
+            return tests;
+        }
         public uint GetCountTests()
         {
             return (uint)tests.Count;

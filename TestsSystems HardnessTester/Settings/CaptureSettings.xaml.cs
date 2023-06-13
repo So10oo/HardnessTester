@@ -1,8 +1,13 @@
 ﻿using Emgu.CV;
 using Emgu.CV.CvEnum;
 using System;
+using System.ComponentModel;
+using System.IO;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Shapes;
+using System.Xml.Serialization;
 
 namespace TestsSystems_HardnessTester
 {
@@ -14,40 +19,38 @@ namespace TestsSystems_HardnessTester
         readonly private VideoCapture capture;
         readonly private DrawingCanvas drawingCanvas;
         readonly private Image image;
-        readonly private CaptureSettingsValue captureSettings;
+        readonly private CaptureSettingsValue captureSettingsValue;
 
-        public WindowCaptureSettings(VideoCapture capture, DrawingCanvas drawingCanvas , Image image ,CaptureSettingsValue captureSettings)
+        public WindowCaptureSettings(VideoCapture capture, DrawingCanvas drawingCanvas, Image image, CaptureSettingsValue captureSettingsValue)
         {
+
             this.capture = capture;
             this.drawingCanvas = drawingCanvas;
             this.image = image;
-            this.captureSettings = captureSettings;
+            this.captureSettingsValue = captureSettingsValue;
             InitializeComponent();
 
-            //foreach (var item in comboBoxResolution.Items)
-            //{
-            //    if (item is TextBlock textBlock)
-            //        if (textBlock.Text == (capture.Width.ToString() + "x" + capture.Height.ToString()))
-            //        {
-            //            comboBoxResolution.SelectedItem = item;
-            //            comboBoxResolution.SelectedIndex = item
-            //            break;
-            //        }
+            #region считываем настройки камеры 
 
-            //}
-            for (int i = 0; i < comboBoxResolution.Items.Count; i++)
+            //string path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "CaptureSettings.json");
+            //this.captureSettingsValue = captureSettingsValue.Read(path);
+
+            foreach (var item in comboBoxResolution.Items)
             {
-                var item = comboBoxResolution.Items[i];
                 if (item is TextBlock textBlock)
                     if (textBlock.Text == (capture.Width.ToString() + "x" + capture.Height.ToString()))
                     {
-                        comboBoxResolution.SelectedIndex = i;
+                        comboBoxResolution.SelectedItem = item;
+                        //captureSettings.Width=capture.Width; 
+                        //captureSettings.Height=capture.Height;
+                        //captureSettingsValue.SetSize(capture.Width, capture.Height);
                         break;
                     }
             }
+            #endregion
+
         }
 
-        
 
         private void SldBrightness_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -102,12 +105,12 @@ namespace TestsSystems_HardnessTester
             if (gainAuto) return;
             var slider = (Slider)sender;
             double value = slider.Value;
-            capture.Set(Emgu.CV.CvEnum.CapProp.Gain, value); 
+            capture.Set(Emgu.CV.CvEnum.CapProp.Gain, value);
         }
 
         private void SlrExposure_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if(exposureAuto) return;
+            if (exposureAuto) return;
             var slider = (Slider)sender;
             double value = slider.Value;
             capture.Set(Emgu.CV.CvEnum.CapProp.Exposure, value);
@@ -119,10 +122,14 @@ namespace TestsSystems_HardnessTester
             string[] wh2 = wh.Split('x');
             int w = int.Parse(wh2[0]);
             int h = int.Parse(wh2[1]);
-            capture.Set(CapProp.FrameWidth, w);
-            capture.Set(CapProp.FrameHeight, h);
-            image.Width = capture.Width ; image.Height = capture.Height;
-            drawingCanvas.Width = capture.Width; drawingCanvas.Height = capture.Height;
+            if (w != capture.Width || h != capture.Height)
+            {
+                capture.Set(CapProp.FrameWidth, w);
+                capture.Set(CapProp.FrameHeight, h);
+                captureSettingsValue.SetSize(capture.Width, capture.Height);
+                image.Width = capture.Width; image.Height = capture.Height;
+                drawingCanvas.Width = capture.Width; drawingCanvas.Height = capture.Height;
+            }
         }
 
         private bool gainAuto = new bool();
@@ -134,10 +141,10 @@ namespace TestsSystems_HardnessTester
                 capture.Set(CapProp.Gain, -10);
                 gainAuto = true;
             }
-            else 
+            else
             {
                 capture.Set(CapProp.Autofocus, 0);
-                capture.Set(CapProp.Gain,SlrGain.Value);
+                capture.Set(CapProp.Gain, SlrGain.Value);
                 gainAuto = false;
             }
         }
@@ -158,6 +165,12 @@ namespace TestsSystems_HardnessTester
                 exposureAuto = false;
             }
         }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            string path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "CaptureSettings.json");
+            captureSettingsValue.Save(path);
+        }
     }
 
     [Serializable]
@@ -172,5 +185,50 @@ namespace TestsSystems_HardnessTester
         public double Exposure { get; set; }
         public double GainAuto { get; set; }
         public double ExposureAuto { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+
+        public void SetSize(int width, int height)
+        {
+            Width = width;
+            Height = height;
+        }
+
+        public void Save(string path)
+        {
+            try
+            {
+                if (File.Exists(path))
+                {
+                    using (FileStream fs = new FileStream(path, FileMode.Create))
+                    {
+                        JsonSerializer.Serialize<CaptureSettingsValue>(fs, this);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Настройки камеры не записались : " + e.Message);
+            }
+        }
+
+        public CaptureSettingsValue Read(string path)
+        {
+            try
+            {
+                if (File.Exists(path))
+                {
+                    using (FileStream fs = new FileStream(path, FileMode.Open))
+                    {
+                        return JsonSerializer.Deserialize<CaptureSettingsValue>(fs);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Настройки камеры не считались : " + e.Message);
+            }
+            return null;
+        }
     }
 }

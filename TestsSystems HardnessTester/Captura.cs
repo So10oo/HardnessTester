@@ -13,12 +13,19 @@ namespace TestsSystems_HardnessTester
 
         private void ProcessFrame(object sender, EventArgs e)
         {
-            Mat frame = capture.QueryFrame();
-            BitmapImage btm = ImageConverter.Bitmap2BitmappImage(frame.ToBitmap());
-            btm.Freeze();//Ах, нет ничего лучше старого доброго расплывчатого и
-                         //таинственного трюка для решения чего-то, чего никто не понимает. 
-                         //–Эдвин 4 марта 2017 в 10:43 https://translated.turbopages.org/proxy_u/en-ru.ru.bff4b66b-64635e39-13818cc7-74722d776562/https/stackoverflow.com/questions/9732709/the-calling-thread-cannot-access-this-object-because-a-different-thread-owns-it#comment72321173_33917169
-            DisplayImage(btm);
+            try
+            {
+                Mat frame = capture.QueryFrame();
+                BitmapImage btm = ImageConverter.Bitmap2BitmappImage(frame.ToBitmap());
+                btm.Freeze();//Ах, нет ничего лучше старого доброго расплывчатого и
+                             //таинственного трюка для решения чего-то, чего никто не понимает. 
+                             //–Эдвин 4 марта 2017 в 10:43 https://translated.turbopages.org/proxy_u/en-ru.ru.bff4b66b-64635e39-13818cc7-74722d776562/https/stackoverflow.com/questions/9732709/the-calling-thread-cannot-access-this-object-because-a-different-thread-owns-it#comment72321173_33917169
+                DisplayImage(btm);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
 
 
         }
@@ -64,7 +71,7 @@ namespace TestsSystems_HardnessTester
             }
 
         }
-        readonly string open_mes = $"Режим \n  видео";
+        readonly string open_mes = $"Режим \n видео";
         readonly string close_mes = $"     Сделать\n  фотографию";
         private void VideoStop()
         {
@@ -88,7 +95,8 @@ namespace TestsSystems_HardnessTester
             capture = new VideoCapture();
             if (capture.IsOpened)
             {
-
+                capture.Set(CapProp.FrameWidth, captureSettingsValue.Width);
+                capture.Set(CapProp.FrameHeight, captureSettingsValue.Height);
                 SetCaptureСontainer(capture.Width, capture.Height);
                 btmVideoStopStart.Content = close_mes;
                 CaptureInProgress = true;

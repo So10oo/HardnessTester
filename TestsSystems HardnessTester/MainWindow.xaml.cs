@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using System.Text.Json;
 using System.IO;
 using static Emgu.CV.Dai.OpenVino;
+using System.Linq;
 
 namespace TestsSystems_HardnessTester
 {
@@ -20,11 +21,11 @@ namespace TestsSystems_HardnessTester
     public partial class MainWindow : Window
     {
         //настройки камеры
-        readonly CaptureSettingsValue captureSettingsValue;
+        readonly CaptureSettingsValue captureSettingsValue = new CaptureSettingsValue();
         //настройки программы 
-        readonly ProgramSettings programSettings;
+        readonly ProgramSettings programSettings = new ProgramSettings();
         //Серия испытаний-тестирование 
-        readonly Testing testing;
+        readonly Testing testing = new Testing();
 
 
 
@@ -33,24 +34,22 @@ namespace TestsSystems_HardnessTester
             InitializeComponent();
             //this.WindowState = WindowState.Maximized;
 
-            //создаём объект серий испытаний
-            testing = new Testing();
 
-            #region считываем настройки программы
-            try
-            {
 
-                string path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "ProgramSettings.json");
-                using (FileStream fs = new FileStream(path, FileMode.Open))
-                {
-                    programSettings = JsonSerializer.Deserialize<ProgramSettings>(fs);
-                }
-            }
-            catch
-            {
-                programSettings = new ProgramSettings() { CoefficientPxtomm = 1.0 };
-            }
+            #region считываем настройки 
+            string path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "ProgramSettings.json");
+            if (programSettings.Read(path) is ProgramSettings ps)
+                programSettings = ps;
             testing.CoefficientPxtomm = programSettings.CoefficientPxtomm;
+
+            path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "CaptureSettings.json");
+            if (captureSettingsValue.Read(path) is CaptureSettingsValue cs)
+                captureSettingsValue = cs;
+          
+            if (captureSettingsValue != null && programSettings != null)
+                MessageBox.Show("Разрешение камеры :" + captureSettingsValue.Width.ToString() + "x" + captureSettingsValue.Height.ToString() +
+                    "\nКоэфициент пересчёта : " + programSettings.CoefficientPxtomm.ToString("N6"));
+
             #endregion
 
 
@@ -61,8 +60,10 @@ namespace TestsSystems_HardnessTester
         }
 
         private void DrawingСanvas_SharpSizeChanged(object sender, SizeChangedEventArgs e)
-            =>
+        {
             txtBrinelSize.Text = "d = " + (drawingСanvas.GetSizeShape() * testing.CoefficientPxtomm).ToString("N5") + " mm";
+            txtVikkersSize.Text = txtBrinelSize.Text;
+        }
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -212,28 +213,7 @@ namespace TestsSystems_HardnessTester
             }
         }
 
-        private void BtmAddBrineltest_Click(object sender, RoutedEventArgs e)
-        {
-            if (drawingСanvas.GetTypeShape() != DrawingCanvas.SelectedShape.Circle)
-                return;
-            try
-            {
-                Test test = new Test()
-                {
-                    SizeTest = drawingСanvas.GetSizeShape(),
-                    Image = ImageConverter.BitmapSource2Bitmap(border.GetImgBorder()),
-                    DateTimeTest = DateTime.Now,
-                    SnapshotNumber = testing.GetCountTests() + 1,
-                    TypeofTest = Test.TypeOfTest.Brinel,
-                };
-                StackPanelBrinel.Children.Add(test.CheckBoxTest);
-                testing.AddTest(test);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
+
 
         private void BtmSaveImg_Click(object sender, RoutedEventArgs e)
         {
@@ -243,7 +223,6 @@ namespace TestsSystems_HardnessTester
             {
                 if (sfd.FileName.Substring(sfd.FileName.Length - 4) != ".bmp")
                     sfd.FileName += ".bmp";
-
                 ImageConverter.BitmapSource2Bitmap(border.GetImgBorder()).Save(sfd.FileName, ImageFormat.Bmp);
             }
         }
@@ -258,14 +237,90 @@ namespace TestsSystems_HardnessTester
             if (capture == null)
                 return;
 
-            WindowCaptureSettings windowCaptureSettings = 
+            WindowCaptureSettings windowCaptureSettings =
                 new WindowCaptureSettings(capture, drawingСanvas, sreenImage, captureSettingsValue);
             windowCaptureSettings.ShowDialog();
             //чтобы окончательно остановить процесс(почему-то после закрытия главного окна программа не выходит из отладки)
             windowCaptureSettings.Close();
         }
-        #endregion
 
+        private void BtmAddBrineltest_Click(object sender, RoutedEventArgs e)
+        {
+            if (drawingСanvas.GetTypeShape() != DrawingCanvas.SelectedShape.Circle)
+                return;
+            try
+            {
+                Test test = new Test()
+                {
+                    SizeTest = drawingСanvas.GetSizeShape() * testing.CoefficientPxtomm,
+                    Image = ImageConverter.BitmapSource2Bitmap(border.GetImgBorder()),
+                    DateTimeTest = DateTime.Now,
+                    SnapshotNumber = testing.GetCountTests() + 1,
+                    TypeofTest = Test.TypeOfTest.Brinel,
+                };
+                StackPanelBrinel.Children.Add(test.CheckBoxTest);
+                testing.AddTest(test);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void BtmDeleteBrinelTests_Click(object sender, RoutedEventArgs e)
+        {
+            StackPanelBrinel.Children.Clear();
+            var tests = testing.GetTests();
+            for (int i = tests.Count - 1; i >= 0; i--)
+            {
+                var item = tests[i];
+                if (item.TypeofTest == Test.TypeOfTest.Brinel)
+                    tests.Remove(item);
+            }
+        }
+
+
+        private void BtmDeleteVikkersTests_Click(object sender, RoutedEventArgs e)
+        {
+            StackPanelVikkers.Children.Clear();
+            var tests = testing.GetTests();
+            for (int i = tests.Count - 1; i >= 0; i--)
+            {
+                var item = tests[i];
+                if (item.TypeofTest == Test.TypeOfTest.Vikkers)
+                    tests.Remove(item);
+            }
+        }
+
+        private void BtmAddVikkerstest_Click(object sender, RoutedEventArgs e)
+        {
+            if (drawingСanvas.GetTypeShape() != DrawingCanvas.SelectedShape.Square)
+                return;
+            try
+            {
+                Test test = new Test()
+                {
+                    SizeTest = drawingСanvas.GetSizeShape() * testing.CoefficientPxtomm,
+                    Image = ImageConverter.BitmapSource2Bitmap(border.GetImgBorder()),
+                    DateTimeTest = DateTime.Now,
+                    SnapshotNumber = testing.GetCountTests() + 1,
+                    TypeofTest = Test.TypeOfTest.Vikkers,
+                };
+                StackPanelVikkers.Children.Add(test.CheckBoxTest);
+                testing.AddTest(test);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void BtmCreatReport_Click(object sender, RoutedEventArgs e)
+        {
+            testing.CreateProtocol();
+        }
+
+        #endregion
 
     }
 

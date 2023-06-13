@@ -214,10 +214,10 @@ namespace TestsSystems_HardnessTester
 
         private void DrawingCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
-                return;
-            else
-                e.Handled = true;
+            //if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
+            //    return;
+            //else
+            //    e.Handled = true;
 
             if (shape != null && (shape.Width < 10 || Double.IsNaN(shape.Width)))
                 if (!(shape is Line))
@@ -366,7 +366,7 @@ namespace TestsSystems_HardnessTester
             if (shape is Rectangle rect)
             {
                 transformScale = ((ScaleTransform)(((TransformGroup)rect.RenderTransform).Children[1])).ScaleX;
-                width = rect.Width;
+                width = rect.Width * Math.Sqrt(2);
             }
             else if (shape is Ellipse elip)
             {
