@@ -317,6 +317,16 @@ namespace TestsSystems_HardnessTester
 
         private void BtmCreatReport_Click(object sender, RoutedEventArgs e)
         {
+            if (tabItemVikkers.IsSelected)
+            {
+                testing.TestingMethod = "Виккерса";
+                testing.ei = "HB";
+            }
+            else if (tabItemBrinel.IsSelected)
+            {
+                testing.TestingMethod = "Бринеля";
+                testing.ei = "HV";
+            }
             testing.CreateProtocol();
         }
 

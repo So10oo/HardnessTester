@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TestsSystems_HardnessTester
 {
@@ -13,7 +15,8 @@ namespace TestsSystems_HardnessTester
         readonly private List<Test> tests = new List<Test>();
         public double CoefficientPxtomm { get; set; } = 1.0; //коэффициент пересчёта
         public uint ProtocolNumber { get; set; } = 1;
-        private string TestingMethod { get; set; } = "Бринеля";//метод тестирования
+        public string TestingMethod { get; set; } = "Бринеля";//метод тестирования
+        public string ei { get; set; } = "HB";
         public string MetalGrade { get; set; } = "Test(040913)";//марка металла
         public string Gost { get; set; } = "гост,ту";//Гост Ту
         public string Melting { get; set; } = "№777";//плавка
@@ -84,16 +87,16 @@ namespace TestsSystems_HardnessTester
             p2.AppendLine("Результаты серии испытаний:").FontSize(12);
 
             #region 2-я таблица
-            var numberTests = 2;
-            int columnCount = tests.Count;
-            Table table2 = document.AddTable(1 + numberTests, columnCount);
+            var rowCount = 6;
+            int columnCount = tests.Count + 1;
+            Table table2 = document.AddTable(columnCount, rowCount);
             table2.SetWidthsPercentage(new[] { 12.9f, 7.4f, 35f, 15f, 15, 12.9f }, 470);
 
 
             table2.Rows[0].Cells[0].Paragraphs[0].Append("Образец").FontSize(12).Alignment = Alignment.center;
             table2.Rows[0].Cells[1].Paragraphs[0].Append("№").FontSize(12).Alignment = Alignment.center;
             table2.Rows[0].Cells[2].Paragraphs[0].Append("Дата").FontSize(12).Alignment = Alignment.center;
-            table2.Rows[0].Cells[3].Paragraphs[0].Append("Твердость,HB").FontSize(12).Alignment = Alignment.center;
+            table2.Rows[0].Cells[3].Paragraphs[0].Append("Твердость," + ei).FontSize(12).Alignment = Alignment.center;
             table2.Rows[0].Cells[4].Paragraphs[0].Append("Диагональ,мм").FontSize(12).Alignment = Alignment.center;
             table2.Rows[0].Cells[5].Paragraphs[0].Append("Разборка").FontSize(12).Alignment = Alignment.center;
 
@@ -102,12 +105,12 @@ namespace TestsSystems_HardnessTester
             for (int i = 0; i < tests.Count; i++)
             {
                 Test _test = tests[i];
-                table2.Rows[i].Cells[0].Paragraphs[0].Append(_test.SampleName).FontSize(12).Alignment = Alignment.center;
-                table2.Rows[i].Cells[1].Paragraphs[0].Append(_test.SnapshotNumber.ToString()).FontSize(12).Alignment = Alignment.center;
-                table2.Rows[i].Cells[2].Paragraphs[0].Append(_test.DataTameNow()).FontSize(12).Alignment = Alignment.center;
-                table2.Rows[i].Cells[3].Paragraphs[0].Append(_test.HardnessTest.ToString("N1")).FontSize(12).Alignment = Alignment.center;
-                table2.Rows[i].Cells[4].Paragraphs[0].Append(_test.SizeTest.ToString("N1")).FontSize(12).Alignment = Alignment.center;
-                table2.Rows[i].Cells[5].Paragraphs[0].Append(_test.Disassembly).FontSize(12).Alignment = Alignment.center;
+                table2.Rows[i + 1].Cells[0].Paragraphs[0].Append(_test.SampleName).FontSize(12).Alignment = Alignment.center;
+                table2.Rows[i + 1].Cells[1].Paragraphs[0].Append(_test.SnapshotNumber.ToString()).FontSize(12).Alignment = Alignment.center;
+                table2.Rows[i + 1].Cells[2].Paragraphs[0].Append(_test.DataTameNow()).FontSize(12).Alignment = Alignment.center;
+                table2.Rows[i + 1].Cells[3].Paragraphs[0].Append(_test.HardnessTest.ToString("N1")).FontSize(12).Alignment = Alignment.center;
+                table2.Rows[i + 1].Cells[4].Paragraphs[0].Append(_test.SizeTest.ToString("N4")).FontSize(12).Alignment = Alignment.center;
+                table2.Rows[i + 1].Cells[5].Paragraphs[0].Append(_test.Disassembly).FontSize(12).Alignment = Alignment.center;
             }
 
             #endregion
@@ -124,11 +127,20 @@ namespace TestsSystems_HardnessTester
             Table table3 = document.AddTable(3, 2);
             table3.Alignment = Alignment.center;
             table3.Design = TableDesign.None;
-            table3.Rows[0].Cells[0].Paragraphs[0].Append("Минимальная твердость:\t 100,90 HB").FontSize(12);
+
+            var _HardnessTestList = (from t in tests
+                    select t.HardnessTest).ToList();
+
+            double mean = _HardnessTestList.Average();
+
+            double sumOfSquares = _HardnessTestList.Sum(x => Math.Pow(x - mean, 2));
+            double standardDeviation = Math.Sqrt(sumOfSquares / _HardnessTestList.Count);
+
+            table3.Rows[0].Cells[0].Paragraphs[0].Append("Минимальная твердость:\t " + _HardnessTestList.Min().ToString("N2") + ei).FontSize(12);
             table3.Rows[0].Cells[1].Paragraphs[0].Append("Стандартное отклонение:\t 0,90").FontSize(12);
-            table3.Rows[1].Cells[0].Paragraphs[0].Append("Максимальная твердость:\t 101,90 HB").FontSize(12);
-            table3.Rows[1].Cells[1].Paragraphs[0].Append("Доверительный интервал:\t 1,90").FontSize(12);
-            table3.Rows[2].Cells[0].Paragraphs[0].Append("Средняя твердость:\t\t 105,90").FontSize(12);
+            table3.Rows[1].Cells[0].Paragraphs[0].Append("Максимальная твердость:\t " + _HardnessTestList.Max().ToString("N2")).FontSize(12);
+            table3.Rows[1].Cells[1].Paragraphs[0].Append("Доверительный интервал:\t "+ standardDeviation.ToString("N2")).FontSize(12);
+            table3.Rows[2].Cells[0].Paragraphs[0].Append("Средняя твердость:\t\t " + mean.ToString("N2") + ei).FontSize(12);
             p3.InsertTableAfterSelf(table3);
             #endregion
 

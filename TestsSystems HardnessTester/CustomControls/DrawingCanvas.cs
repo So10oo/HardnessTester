@@ -244,6 +244,11 @@ namespace TestsSystems_HardnessTester
 
         #region functions
 
+        //public void SetFocusShape(Shape shape)
+        //{
+        //    this.shape= shape;
+        //}
+
         public SelectedShape GetTypeShape()
         {
             if (shape is Rectangle) return SelectedShape.Square;
@@ -360,8 +365,8 @@ namespace TestsSystems_HardnessTester
             double transformScale = 1;
             double width = 0;
 
-            if (shape == null)
-                throw new Exception("Нет отрисованной калиброванчной фигуры");
+            //if (shape == null)
+            //    throw new Exception("Нет отрисованной калиброванчной фигуры");
 
             if (shape is Rectangle rect)
             {
@@ -385,27 +390,27 @@ namespace TestsSystems_HardnessTester
 
         public void PaintCircle(double R, double X, double Y)
         {
-            var _circle = CreatCircle();
-            SetLeft(_circle, X - R);
-            SetTop(_circle, Y - R);
-            _circle.Width = 2 * R;
-            _circle.Height = 2 * R;
-            this.Children.Add(_circle);
+            shape = CreatCircle();
+            SetLeft(shape, X - R);
+            SetTop(shape, Y - R);
+            shape.Width = 2 * R;
+            shape.Height = 2 * R;
+            this.Children.Add(shape);
         }
         internal void PaintSquare(float size, float angle, float X, float Y)
         {
-            var _square = CreatRect();
-            _square.Width = size;
-            _square.Height = size;
-            SetLeft(_square, X - size / 2.0);
-            SetTop(_square, Y - size / 2.0);
-            RotateTransform rt = (RotateTransform)(((TransformGroup)_square.RenderTransform).Children[0]);
+            shape = CreatRect();
+            shape.Width = size;
+            shape.Height = size;
+            SetLeft(shape, X - size / 2.0);
+            SetTop(shape, Y - size / 2.0);
+            RotateTransform rt = (RotateTransform)(((TransformGroup)shape.RenderTransform).Children[0]);
             rt.Angle = angle ;
             rt.CenterX = size / 2.0;
             rt.CenterY = size / 2.0;
             //((RotateTransform)(((TransformGroup)_square.RenderTransform).Children[0])).Angle = angle;
 
-            this.Children.Add(_square);
+            this.Children.Add(shape);
         }
 
 
