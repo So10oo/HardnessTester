@@ -14,15 +14,37 @@ namespace TestsSystems_HardnessTester
         readonly private VideoCapture capture;
         readonly private DrawingCanvas drawingCanvas;
         readonly private Image image;
-        readonly private CaptureSettings captureSettings;
+        readonly private CaptureSettingsValue captureSettings;
 
-        public WindowCaptureSettings(VideoCapture capture, DrawingCanvas drawingCanvas , Image image ,CaptureSettings captureSettings)
+        public WindowCaptureSettings(VideoCapture capture, DrawingCanvas drawingCanvas , Image image ,CaptureSettingsValue captureSettings)
         {
             this.capture = capture;
             this.drawingCanvas = drawingCanvas;
             this.image = image;
             this.captureSettings = captureSettings;
-            InitializeComponent();      
+            InitializeComponent();
+
+            //foreach (var item in comboBoxResolution.Items)
+            //{
+            //    if (item is TextBlock textBlock)
+            //        if (textBlock.Text == (capture.Width.ToString() + "x" + capture.Height.ToString()))
+            //        {
+            //            comboBoxResolution.SelectedItem = item;
+            //            comboBoxResolution.SelectedIndex = item
+            //            break;
+            //        }
+
+            //}
+            for (int i = 0; i < comboBoxResolution.Items.Count; i++)
+            {
+                var item = comboBoxResolution.Items[i];
+                if (item is TextBlock textBlock)
+                    if (textBlock.Text == (capture.Width.ToString() + "x" + capture.Height.ToString()))
+                    {
+                        comboBoxResolution.SelectedIndex = i;
+                        break;
+                    }
+            }
         }
 
         
@@ -139,7 +161,7 @@ namespace TestsSystems_HardnessTester
     }
 
     [Serializable]
-    public class CaptureSettings
+    public class CaptureSettingsValue
     {
         public double Brightness { get; set; }
         public double Contrast { get; set; }

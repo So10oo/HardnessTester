@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:TestsSystems_HardnessTester"
         mc:Ignorable="d"
         Title="CaptureSettings" Height="450" Width="600"
+        MinHeight="350"
        Style="{StaticResource WindowStyle}">
     <Grid Background="#1F1F1F">
         <Grid.RowDefinitions>
@@ -154,17 +155,17 @@
                 Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="6">
             <Grid>
                 <Grid.ColumnDefinitions >
-                    <ColumnDefinition Width="198*"></ColumnDefinition>
-                    <ColumnDefinition Width="199*"></ColumnDefinition>
-                    <ColumnDefinition Width="201*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="180"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <ComboBox 
-                    Grid.Column="1"  Height="30"
+                <ComboBox x:Name="comboBoxResolution"
+                    Grid.Column="1"  Height="27" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                     VerticalAlignment="Center"
                     SelectionChanged="ComboBox_SelectionChanged"
                     Style="{StaticResource ComboBoxStyle}">
-                    <TextBlock Style="{StaticResource TextBlockStyle}" >864x600</TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockStyle}">864x600</TextBlock>
                     <TextBlock Style="{StaticResource TextBlockStyle}">1296x972</TextBlock>
                     <TextBlock Style="{StaticResource TextBlockStyle}">1920x1080</TextBlock>
                     <TextBlock Style="{StaticResource TextBlockStyle}">2136x1602</TextBlock>

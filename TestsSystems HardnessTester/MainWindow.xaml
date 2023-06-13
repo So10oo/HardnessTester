@@ -154,6 +154,7 @@
                             <RowDefinition Height="5*"/>
                             <RowDefinition Height="5*"/>
                             <RowDefinition Height="50*"/>
+                            <RowDefinition Height="5*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions >
                             <ColumnDefinition Width="*"/>
@@ -178,93 +179,16 @@
                             BorderThickness="1" BorderBrush="#909090" Background="#383838" Margin="5"
                             Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel x:Name="SackPanelBrinel">
-                                    <CheckBox Content=" wefwefw fwe fwe fw"    
-                                        VerticalAlignment="Center" Margin="5"
-                                              Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content="foe fipwejfiwe"
-                                        VerticalAlignment="Center" Margin="5"
-                                        Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content="1e fw"  
-                                    VerticalAlignment="Center" Margin="5"
-                                    Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wedw fwe fw"  
-                                        VerticalAlignment="Center" Margin="5"
-                                        Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wefwefw fwe fwe fw"    
-                                        VerticalAlignment="Center" Margin="5"
-                                              Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content="foe fipwejfiwe"
-                                        VerticalAlignment="Center" Margin="5"
-                                        Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content="1e fw"  
-                                    VerticalAlignment="Center" Margin="5"
-                                    Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wedw fwe fw"  
-                                        VerticalAlignment="Center" Margin="5"
-                                        Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wefwefw fwe fwe fw"    
-                                        VerticalAlignment="Center" Margin="5"
-                                              Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wefwefw fwe fwe fw"    
-                                        VerticalAlignment="Center" Margin="5"
-                                              Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content="foe fipwejfiwe"
-                                        VerticalAlignment="Center" Margin="5"
-                                        Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content="1e fw"  
-                                    VerticalAlignment="Center" Margin="5"
-                                    Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wedw fwe fw"  
-                                        VerticalAlignment="Center" Margin="5"
-                                        Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wefwefw fwe fwe fw"    
-                                        VerticalAlignment="Center" Margin="5"
-                                              Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content="foe fipwejfiwe"
-                                        VerticalAlignment="Center" Margin="5"
-                                        Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wefwefw fwe fwe fw"    
-                                        VerticalAlignment="Center" Margin="5"
-                                              Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content="foe fipwejfiwe"
-                                        VerticalAlignment="Center" Margin="5"
-                                        Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content="1e fw"  
-                                    VerticalAlignment="Center" Margin="5"
-                                    Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wedw fwe fw"  
-                                        VerticalAlignment="Center" Margin="5"
-                                        Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wefwefw fwe fwe fw"    
-                                        VerticalAlignment="Center" Margin="5"
-                                              Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content="foe fipwejfiwe"
-                                        VerticalAlignment="Center" Margin="5"
-                                        Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content="1e fw"  
-                                    VerticalAlignment="Center" Margin="5"
-                                    Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wedw fwe fw"  
-                                        VerticalAlignment="Center" Margin="5"
-                                        Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wefwefw fwe fwe fw"    
-                                        VerticalAlignment="Center" Margin="5"
-                                              Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content="1e fw"  
-                                    VerticalAlignment="Center" Margin="5"
-                                    Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wedw fwe fw"  
-                                        VerticalAlignment="Center" Margin="5"
-                                        Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content=" wefwefw fwe fwe fw"    
-                                        VerticalAlignment="Center" Margin="5"
-                                              Style="{StaticResource CheckBoxStyle}"/>
-                                    <CheckBox Content="f"
-                                        VerticalAlignment="Center" Margin="5"
-                                        Style="{StaticResource CheckBoxStyle}"/>
+                                <StackPanel x:Name="StackPanelBrinel">
                                 </StackPanel>
                             </ScrollViewer>
+                        </Border>
+                        <Border Margin="5"
+                            BorderBrush="#D6D6d6" BorderThickness="1"
+                            Grid.Column="1" Grid.Row="5"  
+                             >
+                            <Button Content="Удалить"
+                                Style="{StaticResource ButtonStyle}"/>
                         </Border>
                     </Grid>
                 </TabItem>

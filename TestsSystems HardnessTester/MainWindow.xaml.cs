@@ -20,7 +20,7 @@ namespace TestsSystems_HardnessTester
     public partial class MainWindow : Window
     {
         //настройки камеры
-        readonly CaptureSettings captureSettings;
+        readonly CaptureSettingsValue captureSettingsValue;
         //настройки программы 
         readonly ProgramSettings programSettings;
         //Серия испытаний-тестирование 
@@ -214,6 +214,8 @@ namespace TestsSystems_HardnessTester
 
         private void BtmAddBrineltest_Click(object sender, RoutedEventArgs e)
         {
+            if (drawingСanvas.GetTypeShape() != DrawingCanvas.SelectedShape.Circle)
+                return;
             try
             {
                 Test test = new Test()
@@ -224,6 +226,7 @@ namespace TestsSystems_HardnessTester
                     SnapshotNumber = testing.GetCountTests() + 1,
                     TypeofTest = Test.TypeOfTest.Brinel,
                 };
+                StackPanelBrinel.Children.Add(test.CheckBoxTest);
                 testing.AddTest(test);
             }
             catch (Exception ex)
@@ -255,7 +258,8 @@ namespace TestsSystems_HardnessTester
             if (capture == null)
                 return;
 
-            WindowCaptureSettings windowCaptureSettings = new WindowCaptureSettings(capture, drawingСanvas, sreenImage,captureSettings);
+            WindowCaptureSettings windowCaptureSettings = 
+                new WindowCaptureSettings(capture, drawingСanvas, sreenImage, captureSettingsValue);
             windowCaptureSettings.ShowDialog();
             //чтобы окончательно остановить процесс(почему-то после закрытия главного окна программа не выходит из отладки)
             windowCaptureSettings.Close();

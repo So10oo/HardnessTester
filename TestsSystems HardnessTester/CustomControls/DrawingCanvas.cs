@@ -243,6 +243,15 @@ namespace TestsSystems_HardnessTester
         #endregion
 
         #region functions
+
+        public SelectedShape GetTypeShape()
+        {
+            if (shape is Rectangle) return SelectedShape.Square;
+            else if (shape is Ellipse) return SelectedShape.Circle;
+            else if (shape is Line) return SelectedShape.Line;
+            else return SelectedShape.Non;
+        }
+
         internal void ClearShapes()
         {
             for (int i = this.Children.Count - 1; i >= 0; i--)
@@ -421,6 +430,7 @@ namespace TestsSystems_HardnessTester
             Circle,//окружность
             Square,//квадрат
             Line,
+            Non,
         }
 
         #endregion
