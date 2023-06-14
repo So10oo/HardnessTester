@@ -303,7 +303,7 @@
             </TabControl>
 
             <Button x:Name="btmCreatReport" Content="Создать отчёт" 
-                    Style="{StaticResource ButtonStyle}" Grid.Row="1" Click="BtmCreatReport_Click" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="66,0,0,0" Width="152"/>
+                    Style="{StaticResource ButtonStyle}" Grid.Row="1" Grid.Column="1" Click="BtmCreatReport_Click"   HorizontalAlignment="Stretch"  />
         </Grid>
 
 
