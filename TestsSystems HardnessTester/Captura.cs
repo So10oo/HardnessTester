@@ -16,7 +16,6 @@ namespace TestsSystems_HardnessTester
             try
             {
                 Mat frame = capture.QueryFrame();//в этот момент нельзя переподключать камеру
-
                 BitmapImage btm = ImageConverter.Bitmap2BitmappImage(frame.ToBitmap());
                 btm.Freeze();//Ах, нет ничего лучше старого доброго расплывчатого и
                              //таинственного трюка для решения чего-то, чего никто не понимает. 

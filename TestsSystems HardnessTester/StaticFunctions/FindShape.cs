@@ -1,5 +1,6 @@
 ﻿using Emgu.CV;
 using Emgu.CV.CvEnum;
+using Emgu.CV.Reg;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using System;
@@ -372,7 +373,7 @@ namespace TestsSystems_HardnessTester
             return res;
         }
 
-        public static CircleF FindCirl(Mat image)
+        public static CircleF FindCirl1(Mat image)
         {
             Mat src = image.Clone();
            // CvInvoke.CvtColor(src, src, ColorConversion.Bgr2Gray);
@@ -461,6 +462,83 @@ namespace TestsSystems_HardnessTester
             //canvas.PaintCircle(radius, center.X, center.Y);
             return circleListError[0].Item1;
             #endregion
+        }
+
+        public static CircleF FindCirl2(Mat image)
+        {
+            var canny = new Mat();
+            CvInvoke.BilateralFilter(image.Clone(), image, -1, 15, 15, Emgu.CV.CvEnum.BorderType.Constant);//50 50 
+            CvInvoke.MedianBlur(image, image, 15);
+
+            double threshold = 1000;
+            double thresholdStep = 1000;
+            bool correction = false;
+            double maxPercentage = 0.55;
+            double minPercentage = 0.45;
+            int numberIterations = 0;
+            while (true)
+            {
+                if (numberIterations++ > 100)
+                {
+                    CannyUp(image, canny, 10000);
+                    break;
+                }
+
+                if (threshold >= 10000)
+                {
+                    CvInvoke.MedianBlur(image, image, 5);
+                    threshold = 1000;
+                }
+                CannyUp(image, canny, threshold);
+                double percentageWhitePixels = PercentageWhitePixels(canny);
+                if (percentageWhitePixels < maxPercentage && percentageWhitePixels > minPercentage) //количество пикселей в данном диапозоне процентов
+                    break;
+                else if (percentageWhitePixels >= maxPercentage)
+                {
+                    if (correction)
+                        thresholdStep /= 2.0;
+                    threshold += thresholdStep;
+                }
+                else if (percentageWhitePixels <= minPercentage)
+                {
+                    correction = true;
+                    if (correction)
+                        thresholdStep /= 2.0;
+                    threshold -= thresholdStep;
+                }
+            }
+
+            VectorOfVectorOfPoint cntr = new VectorOfVectorOfPoint();
+            CvInvoke.FindContours(canny, cntr, null, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
+
+            CircleF[] circles = CvInvoke.HoughCircles(canny, HoughModes.Gradient, 0.01, 5000, 500,
+               1, minRadius: Math.Min(canny.Width, canny.Height) / 20,
+               maxRadius: Math.Min(canny.Width, canny.Height) / 2);
+
+            return circles[0];
+        }
+        private static double PercentageWhitePixels(Mat image)
+        {
+            int height = image.Height;
+            int width = image.Width;
+
+            Matrix<Byte> matrix = new Matrix<Byte>(image.Rows, image.Cols, image.NumberOfChannels);
+            image.CopyTo(matrix);
+            var data = matrix.Data;
+
+            double sum = 0;
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                    if (data[y, x] == 255)
+                        sum++;
+            }
+            return (sum / (height * width)) * 100.0;
+        }
+
+        private static void CannyUp(IInputOutputArray input, IInputOutputArray output, double threshold)
+        {
+            CvInvoke.Canny(input, output, threshold / 2.0, threshold, 7, true);
         }
 
         private static VectorOfVectorOfPoint DeleteContursEdge(VectorOfVectorOfPoint input, Mat s, double interest = 1.5)

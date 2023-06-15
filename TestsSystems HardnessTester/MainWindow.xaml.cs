@@ -185,7 +185,7 @@ namespace TestsSystems_HardnessTester
                 }
                 else if (tabItemBrinel.IsSelected)
                 {
-                    var c = FindShape.FindCirl(mat);
+                    var c = FindShape.FindCirl2(mat);
                     drawingСanvas.PaintCircle(c.Radius, c.Center.X, c.Center.Y);
                 }
             }
