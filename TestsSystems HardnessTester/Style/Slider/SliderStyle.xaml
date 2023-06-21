@@ -25,10 +25,11 @@
     <SolidColorBrush x:Key="SliderThumb.Pressed.Background" Color="#686868"/>
     <SolidColorBrush x:Key="SliderThumb.Pressed.Border" Color="White"/>
 
-    <SolidColorBrush x:Key="SliderThumb.Disabled.Background" Color="#FFF0F0F0"/>
-    <SolidColorBrush x:Key="SliderThumb.Disabled.Border" Color="#D9D9D9"/>
+    <SolidColorBrush x:Key="SliderThumb.Disabled.Background" Color="#686868"/>
+    <SolidColorBrush x:Key="SliderThumb.Disabled.Border" Color="red"/>
+    <!--#D9D9D9-->
 
-    <SolidColorBrush x:Key="SliderThumb.Track.Background" Color="Black"/>
+        <SolidColorBrush x:Key="SliderThumb.Track.Background" Color="Black"/>
     <SolidColorBrush x:Key="SliderThumb.Track.Border" Color="#686868"/>
 
     <ControlTemplate x:Key="SliderThumbHorizontalDefault" TargetType="{x:Type Thumb}">

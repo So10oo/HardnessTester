@@ -32,9 +32,10 @@
     <SolidColorBrush x:Key="OptionMark.Pressed.Background" Color="Transparent"/>
     <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="#FF3C77DD"/>
     <SolidColorBrush x:Key="OptionMark.Pressed.Glyph" Color="#FF212121"/>
-    <SolidColorBrush x:Key="OptionMark.Disabled.Background" Color="#FFE6E6E6"/>
-    <SolidColorBrush x:Key="OptionMark.Disabled.Border" Color="#FFBCBCBC"/>
-    <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="#FF707070"/>
+    <SolidColorBrush x:Key="OptionMark.Disabled.Background" Color="Transparent"/>
+    <SolidColorBrush x:Key="OptionMark.Disabled.Border" Color="Red"/>
+    <!--#FFBCBCBC-->
+        <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="#FF707070"/>
 
     <Style x:Key="CheckBoxStyle" TargetType="{x:Type CheckBox}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>

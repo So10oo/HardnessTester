@@ -105,7 +105,7 @@
                 Style="{StaticResource SliderStyle}"  
              />
         <TextBlock Text="{Binding ElementName=SlrGamma, Path=Value,StringFormat={}{0:F2}}"
-                   Grid.Column="3" Grid.Row="5"
+                   Grid.Column="3" Grid.Row="5"  
                    HorizontalAlignment="Center" VerticalAlignment="Center"
                    Style="{StaticResource TextBlockStyle}" />
 
@@ -113,7 +113,7 @@
                     Grid.Row="6"  Grid.Column="1"
                     HorizontalAlignment="Center" VerticalAlignment="Center"
                     Style="{StaticResource TextBlockStyle}"/>
-        <Slider x:Name="SlrGain"
+        <Slider x:Name="SlrGain" IsEnabled="False"
             Minimum="0" Maximum="111" SmallChange="1"
             Grid.Column="2" Grid.Row="6"
             VerticalAlignment="Center"
@@ -124,7 +124,7 @@
                    Grid.Column="3" Grid.Row="6"
                    HorizontalAlignment="Center" VerticalAlignment="Center"
                    Style="{StaticResource TextBlockStyle}" />
-        <CheckBox x:Name="cbGain" Content="Авто" 
+        <CheckBox x:Name="cbGain" Content="Авто" IsEnabled="False"
                   Grid.Column="4" Grid.Row="6"
                   Checked="CBGain_Changed" Unchecked="CBGain_Changed"
                   HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -134,7 +134,7 @@
                     Grid.Row="7"  Grid.Column="1"
                     HorizontalAlignment="Center" VerticalAlignment="Center"
                     Style="{StaticResource TextBlockStyle}"/>
-        <Slider x:Name="SlrExposure"
+        <Slider x:Name="SlrExposure" IsEnabled="False"
             Minimum="0" Maximum="3071" SmallChange="1"
             Grid.Column="2" Grid.Row="7"
             VerticalAlignment="Center"
@@ -145,7 +145,7 @@
                    Grid.Column="3" Grid.Row="7"
                    HorizontalAlignment="Center" VerticalAlignment="Center"
                    Style="{StaticResource TextBlockStyle}" />
-        <CheckBox x:Name="cbExposure" Content="Авто" 
+        <CheckBox x:Name="cbExposure" Content="Авто" IsEnabled="False"
                    Checked="CBExposure_Changed" Unchecked="CBExposure_Changed"
                   Grid.Column="4" Grid.Row="7"
                   HorizontalAlignment="Center" VerticalAlignment="Center"

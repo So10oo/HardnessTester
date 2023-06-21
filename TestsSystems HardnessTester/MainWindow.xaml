@@ -61,7 +61,7 @@
                      Style="{StaticResource ButtonStyle}" Click="BtmClearShape_Click"/>
             <Button x:Name="btmCaptureSettings" Content="Настройки&#x0a;   камеры" Margin="5,5,0,0"
                     Grid.Column="6" Grid.Row="1"
-                     Style="{StaticResource ButtonStyle}" Click="BtmCaptureSettings_Click" />
+                     Style="{StaticResource ButtonStyle}" Click="BtmCaptureSettings_Click" Height="44" VerticalAlignment="Top" />
             <!--Button Content="1" Margin="5,5,0,0" Grid.Column="7" Grid.Row="1"
                      Style="{StaticResource ButtonStyle}" />
             <Button Content="2" Margin="5,5,0,0" Grid.Column="8" Grid.Row="1"
