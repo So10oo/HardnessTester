@@ -237,7 +237,10 @@ namespace TestsSystems_HardnessTester
             HitTestResult result = VisualTreeHelper.HitTest(this, pt);
 
             if (result != null)
+            {
                 this.Children.Remove(result.VisualHit as Shape);
+                shape = null;
+            }
         }
 
         #endregion

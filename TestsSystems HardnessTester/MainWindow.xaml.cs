@@ -12,6 +12,7 @@ using System.Text.Json;
 using System.IO;
 using static Emgu.CV.Dai.OpenVino;
 using System.Linq;
+using System.Windows.Media;
 
 namespace TestsSystems_HardnessTester
 {
@@ -202,14 +203,24 @@ namespace TestsSystems_HardnessTester
             {
                 var a = double.Parse(textBoxСalibration.Text);
                 var b = drawingСanvas.GetSizeShape();
+                if (b == 0)
+                    throw new Exception("Не найдена фигура!");
+        
                 testing.CoefficientPxtomm = a / b;
                 if (programSettings != null)
                     programSettings.CoefficientPxtomm = testing.CoefficientPxtomm;
-                MessageBox.Show("коэфициент пересчета равен " + testing.CoefficientPxtomm.ToString("N6"));
+                //MessageBox.Show("коэфициент пересчета равен " + testing.CoefficientPxtomm.ToString("N6"));
+
+                messageСalibration.Foreground = new SolidColorBrush(Colors.LightGreen);
+                messageСalibration.BeginAnimation(TextBlock.TextProperty,
+                    Animations.CreatStrindAnimation("Успешно! Коэфициент пересчета равен " + testing.CoefficientPxtomm.ToString("N6") + " mm/px", 0, 5));
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
+                messageСalibration.Foreground = new SolidColorBrush(Colors.Red);
+                messageСalibration.BeginAnimation(TextBlock.TextProperty,
+                    Animations.CreatStrindAnimation("Ошибка! " + ex.Message, 0, 2));
             }
         }
 

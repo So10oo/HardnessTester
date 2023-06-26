@@ -62,6 +62,7 @@
       <DependentUpon>CaptureSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\ProgramSettings.cs" />
+    <Compile Include="StaticFunctions\Animations.cs" />
     <Compile Include="StaticFunctions\FindShape.cs" />
     <Compile Include="StaticFunctions\ImageConverter.cs" />
     <Compile Include="Style\Window\WindowStyle.cs" />
