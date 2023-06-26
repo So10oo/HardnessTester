@@ -17,6 +17,7 @@
                 <ResourceDictionary Source="Style\Slider\SliderStyle.xaml"/>
                 <ResourceDictionary Source="Style\CheckBox\CheckBoxStyle.xaml"/>
                 <ResourceDictionary Source="Style\ComboBox\ComboBoxStyle.xaml"/>
+                <ResourceDictionary Source="Style\ScrollViewer\ScrollViewerStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 

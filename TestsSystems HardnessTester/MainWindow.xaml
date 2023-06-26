@@ -213,7 +213,7 @@
                                     Grid.Column="1" Grid.Row="1">
                             <Button x:Name="btmAddBrineltest"  Content="Добавить" 
                                         VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                                       Style="{StaticResource ButtonStyle}" Click="BtmAddBrineltest_Click" />
+                                       Style="{StaticResource ButtonStyle}" Click="BtmAddBrineltest_Click"/>
                         </Border>
                         <TextBlock Text="Испытания"
                             Grid.Column="1" Grid.Row="3"
@@ -222,8 +222,36 @@
                         <Border 
                             BorderThickness="1" BorderBrush="#909090" Background="#383838" Margin="5"
                             Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ScrollViewer  VerticalScrollBarVisibility="Auto">
                                 <StackPanel x:Name="StackPanelBrinel">
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
                                 </StackPanel>
                             </ScrollViewer>
                         </Border>
@@ -255,7 +283,8 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="5*"/>
                             <RowDefinition Height="10*"/>
-                            <RowDefinition Height="50*"/>
+                            <RowDefinition Height="5*"/>
+                            <RowDefinition Height="45*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions >
                             <ColumnDefinition Width="*"></ColumnDefinition>
