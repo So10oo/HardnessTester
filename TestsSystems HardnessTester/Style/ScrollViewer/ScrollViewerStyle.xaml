@@ -115,7 +115,7 @@
                     </RepeatButton>
                 </Track.IncreaseRepeatButton>
             </Track>
-            <RepeatButton Grid.Row="3" Height="11"
+            <RepeatButton Grid.Row="2" Height="11"
                           Style="{StaticResource ScrollBarLineButtonBottomStyle}"
                           Command="ScrollBar.LineDownCommand">
             </RepeatButton>
