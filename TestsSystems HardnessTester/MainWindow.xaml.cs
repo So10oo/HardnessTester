@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -56,11 +55,8 @@ namespace TestsSystems_HardnessTester
 
         protected override void OnClosing(CancelEventArgs e)
         {
-
-
             //логика связанная с камерой 
             capture?.Dispose();
-
             e.Cancel = false;
         }
 
@@ -180,7 +176,7 @@ namespace TestsSystems_HardnessTester
                 var b = drawingСanvas.GetSizeShape();
                 if (b == 0)
                     throw new Exception("Не найдена фигура!");
-        
+
                 testing.CoefficientPxtomm = a / b;
 
                 programSettings.CoefficientPxtomm = testing.CoefficientPxtomm;

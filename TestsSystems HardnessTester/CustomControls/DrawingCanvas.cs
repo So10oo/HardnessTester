@@ -6,6 +6,7 @@ using System.Windows.Shapes;
 using System.Windows;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Emgu.CV.Structure;
 
 namespace TestsSystems_HardnessTester
 {
@@ -247,11 +248,11 @@ namespace TestsSystems_HardnessTester
 
         public void PaintCircle(double R, double X, double Y)
         {
-            var _circle = CreatCircle(new Point(X + R, X + Y));
-            SetLeft(_circle, X - R);
-            SetTop(_circle, Y - R);
-            _circle.Diameter = 2 * R;
-            this.Children.Add(_circle);
+            var _circle = CreatCircle(new Point(X - R, Y - R));
+            _circle.Posting(X, Y + R, 2 * R, -90);
+
+             
+            //this.Children.Add(_circle);
         }
 
         private bool IsKeyDownRotation() => Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift);
@@ -382,6 +383,8 @@ namespace TestsSystems_HardnessTester
             tb.FontSize = fontSize;
             panel?.Children.Add(tb);
             panel?.Children.Add(this);
+
+             
         }
 
 
@@ -757,6 +760,7 @@ namespace TestsSystems_HardnessTester
             Canvas.SetTop(this, p.Y);
             Canvas.SetLeft(tb, p.X);
             Canvas.SetTop(tb, p.Y);
+            TextUpdate();
         }
 
         [TypeConverter(typeof(LengthConverter))]

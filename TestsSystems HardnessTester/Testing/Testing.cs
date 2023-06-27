@@ -41,6 +41,7 @@ namespace TestsSystems_HardnessTester
         {
             return tests;
         }
+
         public uint GetCountTests()
         {
             return (uint)tests.Count;
@@ -51,6 +52,12 @@ namespace TestsSystems_HardnessTester
             string filePath = "export.docx";
             DocX document = DocX.Create(filePath);
             document.MarginTop = 24;//???
+
+            Test.TypeOfTest type = TestingMethod == "Бринеля" ? Test.TypeOfTest.Brinel : Test.TypeOfTest.Vikkers;
+
+            var tests = (from t in this.tests  
+                         where t.TypeofTest == type
+                         select t).ToList();
 
             Paragraph p1 = document.InsertParagraph();
             p1.Alignment = Alignment.center;
@@ -100,7 +107,7 @@ namespace TestsSystems_HardnessTester
             table2.Rows[0].Cells[4].Paragraphs[0].Append("Диагональ,мм").FontSize(12).Alignment = Alignment.center;
             table2.Rows[0].Cells[5].Paragraphs[0].Append("Разборка").FontSize(12).Alignment = Alignment.center;
 
-            #region надо будет менять (это тест)
+            #region заполняем таблицу
 
             for (int i = 0; i < tests.Count; i++)
             {

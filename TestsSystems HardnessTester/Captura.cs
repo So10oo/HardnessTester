@@ -72,8 +72,11 @@ namespace TestsSystems_HardnessTester
             }
 
         }
+
         readonly string open_mes = $"Режим \n видео";
+
         readonly string close_mes = $"     Сделать\n  фотографию";
+
         private void VideoStop()
         {
             if (CaptureInProgress)
@@ -86,6 +89,7 @@ namespace TestsSystems_HardnessTester
         }
 
         private bool CaptureInProgress { get; set; }
+
         private void BtmConnectToCamer_Click(object sender, RoutedEventArgs e)
         {
             if (capture != null)

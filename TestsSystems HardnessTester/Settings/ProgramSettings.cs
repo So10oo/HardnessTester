@@ -20,7 +20,7 @@ namespace TestsSystems_HardnessTester
             {
                 if (File.Exists(path))
                 {
-                    using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+                    using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         JsonSerializer.Serialize<ProgramSettings>(fs, this);
                     }

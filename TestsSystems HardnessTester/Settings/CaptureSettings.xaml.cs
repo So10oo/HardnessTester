@@ -1,13 +1,10 @@
 ﻿using Emgu.CV;
 using Emgu.CV.CvEnum;
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Shapes;
-using System.Xml.Serialization;
 
 namespace TestsSystems_HardnessTester
 {

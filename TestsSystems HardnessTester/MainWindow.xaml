@@ -140,10 +140,10 @@
                             <ColumnDefinition Width="2*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock x:Name="txtVikkersSize" Text="d=1"
+                        <!--<TextBlock x:Name="txtVikkersSize" Text="d=1"
                                    VerticalAlignment="Center" HorizontalAlignment="Center"
                             Grid.Column="1" Grid.Row="0"
-                            Style="{StaticResource TextBlockStyle}"/>
+                            Style="{StaticResource TextBlockStyle}"/>-->
                         <Border BorderBrush="#D6D6d6" BorderThickness="1" Margin="5,5,5,0"
                                     Grid.Column="1" Grid.Row="1">
                             <Button x:Name="btmAddVikkerstest"  Content="Добавить" 
@@ -198,10 +198,10 @@
                             <ColumnDefinition Width="2*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock x:Name="txtBrinelSize" Text="d=1"
+                        <!--<TextBlock x:Name="txtBrinelSize" Text="d=1"
                                    VerticalAlignment="Center" HorizontalAlignment="Center"
                             Grid.Column="1" Grid.Row="0"
-                            Style="{StaticResource TextBlockStyle}"/>
+                            Style="{StaticResource TextBlockStyle}"/>-->
                         <Border BorderBrush="#D6D6d6" BorderThickness="1" Margin="5,5,5,0"
                                     Grid.Column="1" Grid.Row="1">
                             <Button x:Name="btmAddBrineltest"  Content="Добавить" 
@@ -217,34 +217,7 @@
                             Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3">
                             <ScrollViewer  VerticalScrollBarVisibility="Auto">
                                 <StackPanel x:Name="StackPanelBrinel">
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
-                                    <CheckBox Style="{StaticResource CheckBoxStyle}" Content="qwe" Margin="5"/>
+                                  
                                 </StackPanel>
                             </ScrollViewer>
                         </Border>
@@ -330,7 +303,8 @@
             </TabControl>
 
             <Button x:Name="btmCreatReport" Content="Создать отчёт" 
-                    Style="{StaticResource ButtonStyle}" Grid.Row="1" Grid.Column="1" Click="BtmCreatReport_Click"   HorizontalAlignment="Stretch"  />
+                    Style="{StaticResource ButtonStyle}" Grid.Row="1" Grid.Column="1" 
+                    Click="BtmCreatReport_Click"   HorizontalAlignment="Stretch"  />
         </Grid>
 
 
