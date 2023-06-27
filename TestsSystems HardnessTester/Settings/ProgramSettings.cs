@@ -12,7 +12,8 @@ namespace TestsSystems_HardnessTester
     [Serializable]
     public class ProgramSettings
     {
-        public double CoefficientPxtomm { get; set; }
+        public double CoefficientPxtomm { get; set; } = 1;
+
         public void Save(string path)
         {
             try
@@ -27,7 +28,7 @@ namespace TestsSystems_HardnessTester
             }
             catch (Exception e)
             {
-                MessageBox.Show("Настройки камеры не записались : " + e.Message);
+                MessageBox.Show("Настройки программы не записались : " + e.Message);
             }
         }
 
@@ -45,7 +46,7 @@ namespace TestsSystems_HardnessTester
             }
             catch (Exception e)
             {
-                MessageBox.Show("Настройки камеры не считались : " + e.Message);
+                MessageBox.Show("Настройки программы не считались : " + e.Message);
             }
             return null;
         }

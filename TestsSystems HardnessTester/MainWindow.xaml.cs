@@ -4,15 +4,13 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Text.Json;
-using System.IO;
-using static Emgu.CV.Dai.OpenVino;
-using System.Linq;
-using System.Windows.Media;
 
 namespace TestsSystems_HardnessTester
 {
@@ -35,13 +33,13 @@ namespace TestsSystems_HardnessTester
             InitializeComponent();
             //this.WindowState = WindowState.Maximized;
 
-
-
             #region считываем настройки 
             string path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "ProgramSettings.json");
             if (programSettings.Read(path) is ProgramSettings ps)
                 programSettings = ps;
             testing.CoefficientPxtomm = programSettings.CoefficientPxtomm;
+            MeasuringShape.CoefficientPxtomm = testing.CoefficientPxtomm;
+ 
 
             path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "CaptureSettings.json");
             if (captureSettingsValue.Read(path) is CaptureSettingsValue cs)
@@ -52,30 +50,13 @@ namespace TestsSystems_HardnessTester
                     "\nКоэфициент пересчёта : " + programSettings.CoefficientPxtomm.ToString("N6"));
 
             #endregion
-
-
-
-            //добавляем обработчик к изменению размеры фигуры
-            drawingСanvas.SharpSizeChanged += DrawingСanvas_SharpSizeChanged;
-
         }
 
-        private void DrawingСanvas_SharpSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            txtBrinelSize.Text = "d = " + (drawingСanvas.GetSizeShape() * testing.CoefficientPxtomm).ToString("N5") + " mm";
-            txtVikkersSize.Text = txtBrinelSize.Text;
-        }
+ 
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            //логика связанная с настройками
-            //string jsonString = JsonSerializer.Serialize<ProgramSettings>(programSettings);
-            string path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "ProgramSettings.json");
-            using (FileStream fs = new FileStream(path, FileMode.Open))
-            {
-                if (programSettings != null)
-                    JsonSerializer.Serialize<ProgramSettings>(fs, programSettings);
-            }
+
 
             //логика связанная с камерой 
             capture?.Dispose();
@@ -106,9 +87,9 @@ namespace TestsSystems_HardnessTester
             }
         }
 
-        #endregion 
+        #endregion
 
-
+        #region вспомогательные функции 
         void SetCaptureСontainer(double Width, double Height)
         {
             if (drawingСanvas.Width != Width || drawingСanvas.Height != Height || sreenImage.Height != Height || sreenImage.Width != Width)
@@ -130,11 +111,12 @@ namespace TestsSystems_HardnessTester
                 e.Handled = true;
             }
         }
+        #endregion
 
-        private void TestWHwindow_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show(mainWin.Width.ToString() + "   " + mainWin.Height.ToString());
-        }
+        //private void TestWHwindow_Click(object sender, RoutedEventArgs e)
+        //{
+        //    MessageBox.Show(mainWin.Width.ToString() + "   " + mainWin.Height.ToString());
+        //}
 
 
         #region Кнопки на панеле 
@@ -153,15 +135,8 @@ namespace TestsSystems_HardnessTester
                 for (int i = drawingСanvas.Children.Count - 1; i >= 0; i--)
                     if (drawingСanvas.Children[i] is Shape _shape)
                         drawingСanvas.Children.Remove(_shape);
-
                 Bitmap bitmap = new Bitmap(ofd.FileName);
-
-                //drawingСanvas.Width = bitmap.Width;
-                //drawingСanvas.Height = bitmap.Height;
-                //sreenImage.Width = bitmap.Width;
-                //sreenImage.Height = bitmap.Height;
                 SetCaptureСontainer(bitmap.Width, bitmap.Height);
-
                 sreenImage.Source = ImageConverter.Bitmap2BitmappImage(bitmap);
             }
         }
@@ -171,7 +146,6 @@ namespace TestsSystems_HardnessTester
             VideoStop();//выключить видео если оно воспроизводится 
             if (sreenImage.Source == null)
                 return;
-
 
             Emgu.CV.Mat mat = ImageConverter.BitmapImage2Bitmap((BitmapImage)sreenImage.Source).ToMat();
             Emgu.CV.CvInvoke.CvtColor(mat, mat, Emgu.CV.CvEnum.ColorConversion.Bgr2Gray);
@@ -202,13 +176,19 @@ namespace TestsSystems_HardnessTester
             try
             {
                 var a = double.Parse(textBoxСalibration.Text);
+                
                 var b = drawingСanvas.GetSizeShape();
                 if (b == 0)
                     throw new Exception("Не найдена фигура!");
         
                 testing.CoefficientPxtomm = a / b;
-                if (programSettings != null)
-                    programSettings.CoefficientPxtomm = testing.CoefficientPxtomm;
+
+                programSettings.CoefficientPxtomm = testing.CoefficientPxtomm;
+                MeasuringShape.CoefficientPxtomm = testing.CoefficientPxtomm;
+                MeasuringShape.AllTextUpdate(drawingСanvas);
+
+                string path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "ProgramSettings.json");
+                programSettings.Save(path);
                 //MessageBox.Show("коэфициент пересчета равен " + testing.CoefficientPxtomm.ToString("N6"));
 
                 messageСalibration.Foreground = new SolidColorBrush(Colors.LightGreen);
@@ -343,6 +323,12 @@ namespace TestsSystems_HardnessTester
 
         #endregion
 
+        private void TxtMessageCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var temp = (TextBlock)sender;
+            Canvas.SetLeft(temp, (drawingСanvas.ActualWidth - temp.ActualWidth) / 2.0);
+            Canvas.SetTop(temp, (drawingСanvas.ActualHeight - temp.ActualHeight) / 2.0);
+        }
     }
 
 }

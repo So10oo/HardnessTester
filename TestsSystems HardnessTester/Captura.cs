@@ -3,6 +3,7 @@ using Emgu.CV.CvEnum;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace TestsSystems_HardnessTester
@@ -102,6 +103,12 @@ namespace TestsSystems_HardnessTester
                 CaptureInProgress = true;
                 capture.ImageGrabbed += ProcessFrame;
                 capture.Start();
+            }
+            else 
+            {
+                txtMessageCanvas.FontSize = Math.Min(drawingСanvas.ActualHeight, drawingСanvas.ActualWidth) * 0.04;
+                txtMessageCanvas.Foreground = new SolidColorBrush(Colors.Red);
+                txtMessageCanvas.BeginAnimation(TextBlock.TextProperty, Animations.CreatStrindAnimation("Не удалось подключиться к камере!", 0, 2.5));
             }
         }
     }
