@@ -57,7 +57,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Captura.cs" />
-    <Compile Include="CustomControls\DrawingCanvas.cs" />
+    <Compile Include="CustomControlsAndClasses\DrawingCanvas.cs" />
+    <Compile Include="CustomControlsAndClasses\MeasuringShape.cs" />
     <Compile Include="Settings\CaptureSettings.xaml.cs">
       <DependentUpon>CaptureSettings.xaml</DependentUpon>
     </Compile>
@@ -66,7 +67,7 @@
     <Compile Include="StaticFunctions\FindShape.cs" />
     <Compile Include="StaticFunctions\ImageConverter.cs" />
     <Compile Include="Style\Window\WindowStyle.cs" />
-    <Compile Include="CustomControls\ZoomBorder.cs" />
+    <Compile Include="CustomControlsAndClasses\ZoomBorder.cs" />
     <Compile Include="Testing\Test.cs" />
     <Compile Include="Testing\Testing.cs" />
     <Page Include="MainWindow.xaml">

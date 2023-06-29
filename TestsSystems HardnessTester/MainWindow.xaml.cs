@@ -25,8 +25,6 @@ namespace TestsSystems_HardnessTester
         //Серия испытаний-тестирование 
         readonly Testing testing = new Testing();
 
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -49,9 +47,8 @@ namespace TestsSystems_HardnessTester
                     "\nКоэфициент пересчёта : " + programSettings.CoefficientPxtomm.ToString("N6"));
 
             #endregion
-        }
 
- 
+        }
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -59,7 +56,6 @@ namespace TestsSystems_HardnessTester
             capture?.Dispose();
             e.Cancel = false;
         }
-
 
         #region Выбор фигуры
         private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) => SetupTypeShape();
@@ -107,13 +103,14 @@ namespace TestsSystems_HardnessTester
                 e.Handled = true;
             }
         }
+
+        private void TxtMessageCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var temp = (TextBlock)sender;
+            Canvas.SetLeft(temp, (drawingСanvas.ActualWidth - temp.ActualWidth) / 2.0);
+            Canvas.SetTop(temp, (drawingСanvas.ActualHeight - temp.ActualHeight) / 2.0);
+        }
         #endregion
-
-        //private void TestWHwindow_Click(object sender, RoutedEventArgs e)
-        //{
-        //    MessageBox.Show(mainWin.Width.ToString() + "   " + mainWin.Height.ToString());
-        //}
-
 
         #region Кнопки на панеле 
 
@@ -181,11 +178,14 @@ namespace TestsSystems_HardnessTester
 
                 programSettings.CoefficientPxtomm = testing.CoefficientPxtomm;
                 MeasuringShape.CoefficientPxtomm = testing.CoefficientPxtomm;
-                MeasuringShape.AllTextUpdate(drawingСanvas);
+
+                //вместо этого надо будет пройтись по всем фигурам 
+                //InvalidateVisual()
+                drawingСanvas.InvalidateVisualShapes();
 
                 string path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "ProgramSettings.json");
                 programSettings.Save(path);
-                //MessageBox.Show("коэфициент пересчета равен " + testing.CoefficientPxtomm.ToString("N6"));
+
 
                 messageСalibration.Foreground = new SolidColorBrush(Colors.LightGreen);
                 messageСalibration.BeginAnimation(TextBlock.TextProperty,
@@ -199,8 +199,6 @@ namespace TestsSystems_HardnessTester
                     Animations.CreatStrindAnimation("Ошибка! " + ex.Message, 0, 2));
             }
         }
-
-
 
         private void BtmSaveImg_Click(object sender, RoutedEventArgs e)
         {
@@ -266,7 +264,6 @@ namespace TestsSystems_HardnessTester
             }
         }
 
-
         private void BtmDeleteVikkersTests_Click(object sender, RoutedEventArgs e)
         {
             StackPanelVikkers.Children.Clear();
@@ -319,12 +316,7 @@ namespace TestsSystems_HardnessTester
 
         #endregion
 
-        private void TxtMessageCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var temp = (TextBlock)sender;
-            Canvas.SetLeft(temp, (drawingСanvas.ActualWidth - temp.ActualWidth) / 2.0);
-            Canvas.SetTop(temp, (drawingСanvas.ActualHeight - temp.ActualHeight) / 2.0);
-        }
+    
     }
 
 }
