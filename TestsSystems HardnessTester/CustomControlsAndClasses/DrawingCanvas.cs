@@ -193,7 +193,7 @@ namespace TestsSystems_HardnessTester
 
         private void DrawingCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ClearShapes();
+            //ClearShapes();
         }
         #endregion
 
@@ -215,6 +215,8 @@ namespace TestsSystems_HardnessTester
                     this.Children.Remove(_shape);
                     shapes.Remove(_shape);
                 }
+            //this.Children.Clear();
+            //shapes.Clear();
         }
 
 
@@ -228,12 +230,15 @@ namespace TestsSystems_HardnessTester
         {
             var _circle = CreatShape<MeasuringСircle>(new Point(X - R, Y - R));
             _circle.Posting(X, Y + R, 2 * R, -90);
-            CurrentMeasuringShape= _circle;
+            CurrentMeasuringShape = _circle;
         }
 
-        public void PaintSquare(float width, float angle, float x, float y)
+        public void PaintSquare(float side, float angle, float X, float Y)
         {
-            throw new NotImplementedException();
+            var _sqare = CreatShape<MeasuringSquare>(new Point(X - side/2.0, Y - side/2.0));
+            _sqare.Posting(side*Math.Sqrt(2),45);
+            _sqare.Rotation(angle);
+            CurrentMeasuringShape = _sqare;
         }
 
         public SelectedShape GetTypeShape()

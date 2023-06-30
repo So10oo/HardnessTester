@@ -441,8 +441,7 @@ namespace TestsSystems_HardnessTester
             return TransformGroupShape.Transform(p);
         }
 
-        internal override void Posting(params double[] p)//диагональ,угол ,
-                                                         //из какой точки рисовать
+        internal override void Posting(params double[] p)//диагональ,угол 
         {
             double sideLength = p[0] / Math.Sqrt(2);
             double angle = p[1];

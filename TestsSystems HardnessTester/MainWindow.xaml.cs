@@ -125,9 +125,6 @@ namespace TestsSystems_HardnessTester
             {
                 VideoStop();//останавливаем видео если оно запущено
                 drawingСanvas.ClearShapes();//удаляем фигуры если они есть на панели 
-                for (int i = drawingСanvas.Children.Count - 1; i >= 0; i--)
-                    if (drawingСanvas.Children[i] is Shape _shape)
-                        drawingСanvas.Children.Remove(_shape);
                 Bitmap bitmap = new Bitmap(ofd.FileName);
                 SetCaptureСontainer(bitmap.Width, bitmap.Height);
                 sreenImage.Source = ImageConverter.Bitmap2BitmappImage(bitmap);
