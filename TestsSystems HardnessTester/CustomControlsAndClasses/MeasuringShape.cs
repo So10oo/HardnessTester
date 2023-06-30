@@ -114,7 +114,7 @@ namespace TestsSystems_HardnessTester
                     FlowDirection.LeftToRight,
                     new Typeface("Times New Roman"),
                     TextSize,
-                    TextСolor, 1);
+                    TextСolor, 1.0);
                 var textWidth = formattedText.Width;
                 var textHeight = formattedText.Height;
                 var midPoint = GetCenter();

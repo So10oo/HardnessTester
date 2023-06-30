@@ -749,5 +749,6 @@ namespace TestsSystems_HardnessTester
             return (errorCorect - errorCircle) / errorCorect;
         }
     }
+
 }
 
