@@ -14,6 +14,7 @@ namespace TestsSystems_HardnessTester
 
         private void ProcessFrame(object sender, EventArgs e)
         {
+
             try
             {
                 Mat frame = capture.QueryFrame();//в этот момент нельзя переподключать камеру
@@ -27,6 +28,7 @@ namespace TestsSystems_HardnessTester
             {
                 MessageBox.Show(ex.Message);
             }
+
 
 
         }
@@ -108,7 +110,7 @@ namespace TestsSystems_HardnessTester
                 capture.ImageGrabbed += ProcessFrame;
                 capture.Start();
             }
-            else 
+            else
             {
                 txtMessageCanvas.FontSize = Math.Min(drawingСanvas.ActualHeight, drawingСanvas.ActualWidth) * 0.04;
                 txtMessageCanvas.Foreground = new SolidColorBrush(Colors.Red);

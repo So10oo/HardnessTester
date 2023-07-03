@@ -121,13 +121,18 @@ namespace TestsSystems_HardnessTester
                 Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp"
             };
 
+            VideoStop();//останавливаем видео если оно запущено
             if (ofd.ShowDialog() == true)
             {
-                VideoStop();//останавливаем видео если оно запущено
+                // VideoStop();//останавливаем видео если оно запущено
                 drawingСanvas.ClearShapes();//удаляем фигуры если они есть на панели 
                 Bitmap bitmap = new Bitmap(ofd.FileName);
                 SetCaptureСontainer(bitmap.Width, bitmap.Height);
                 sreenImage.Source = ImageConverter.Bitmap2BitmappImage(bitmap);
+            }
+            else
+            {
+                VideoStart();
             }
         }
 
