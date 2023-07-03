@@ -89,6 +89,16 @@ namespace TestsSystems_HardnessTester
             }
 
         }
+        private void VideoStart()
+        {
+            if (CaptureInProgress)
+            {
+                capture.Start();
+                btmVideoStopStart.Content = close_mes;
+                CaptureInProgress = true;
+            }
+
+        }
 
         private bool CaptureInProgress { get; set; }
 
