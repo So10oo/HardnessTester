@@ -10,7 +10,9 @@ namespace TestsSystems_HardnessTester
     public class DrawingCanvas : Canvas
     {
 
-        MeasuringShape currentMeasuringShape;
+        private MeasuringShape currentMeasuringShape;
+        private SolidColorBrush currentColorBrush = new SolidColorBrush(Color.FromRgb(113, 96, 232)); // синий(85, 170, 255) фиолетовый(113,96,232)
+
         private MeasuringShape CurrentMeasuringShape
         {
             get 
@@ -21,12 +23,12 @@ namespace TestsSystems_HardnessTester
             {
                 if (currentMeasuringShape != null)
                 {
-                    currentMeasuringShape.Stroke = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-                    currentMeasuringShape.TextСolor = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                    currentMeasuringShape.Stroke = MeasuringShape.colorBrush;
+                    currentMeasuringShape.TextСolor = MeasuringShape.colorBrush;
                 }
                 currentMeasuringShape= value;             
-                currentMeasuringShape.Stroke = new SolidColorBrush(Color.FromRgb(0, 255, 0));
-                currentMeasuringShape.TextСolor = new SolidColorBrush(Color.FromRgb(0, 255, 0));
+                currentMeasuringShape.Stroke = currentColorBrush;
+                currentMeasuringShape.TextСolor = currentColorBrush;
             }
         }
         private Point startPoint = new Point();
@@ -163,11 +165,7 @@ namespace TestsSystems_HardnessTester
             else
                 //e.Handled = true;
 
-            //if (CurrentMeasuringShape != null && (CurrentMeasuringShape.SizeShape < 10))//если фигура маленькая то она удаляется 
-            //{
-            //    this.Children.Remove(CurrentMeasuringShape);
-            //    CurrentMeasuringShape = null;
-            //}
+
 
             ActionsStatus = Actions.None;
         }

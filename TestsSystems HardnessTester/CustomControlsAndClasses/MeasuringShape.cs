@@ -128,10 +128,10 @@ namespace TestsSystems_HardnessTester
 
         #region static Metod and Features
 
-        public static double fontSize = 50;
-        public static double strokeThickness = 2;
-        public static double multiplierStrokeThickness = 1;
-        public static SolidColorBrush colorBrush = new SolidColorBrush(Colors.Red);
+        //public static double fontSize = 50;
+        //public static double strokeThickness = 2;
+        //public static double multiplierStrokeThickness = 1;
+        public static SolidColorBrush colorBrush = new SolidColorBrush(Color.FromRgb(56, 48, 116));/*new SolidColorBrush(Colors.Red);*/ //синий(42, 85, 127)  фиолетовый(56, 48, 116)
         private static double сoefficientPxtomm = 1;
 
        // TransformGroup transformGroupShape = new TransformGroup();
