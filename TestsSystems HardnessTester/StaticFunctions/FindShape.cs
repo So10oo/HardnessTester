@@ -1,13 +1,11 @@
 ﻿using Emgu.CV;
 using Emgu.CV.CvEnum;
-using Emgu.CV.Reg;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows;
 using static System.Math;
 
 namespace TestsSystems_HardnessTester
@@ -575,6 +573,7 @@ namespace TestsSystems_HardnessTester
             }
             return true;
         }
+
         private static float ErrorCirclev1(CircleF c, in Matrix<float> mat)
         {
             float errorCorect = 0;

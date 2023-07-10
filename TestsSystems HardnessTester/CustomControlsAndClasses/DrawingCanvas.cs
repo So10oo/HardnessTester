@@ -161,7 +161,7 @@ namespace TestsSystems_HardnessTester
             if (IsKeyDownScaleDC())
                 return;
             else
-                e.Handled = true;
+                //e.Handled = true;
 
             //if (CurrentMeasuringShape != null && (CurrentMeasuringShape.SizeShape < 10))//если фигура маленькая то она удаляется 
             //{
