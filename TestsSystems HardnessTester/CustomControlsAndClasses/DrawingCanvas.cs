@@ -11,7 +11,7 @@ namespace TestsSystems_HardnessTester
     {
 
         private MeasuringShape currentMeasuringShape;
-        private SolidColorBrush currentColorBrush = new SolidColorBrush(Color.FromRgb(113, 96, 232)); // синий(85, 170, 255) фиолетовый(113,96,232)
+        private SolidColorBrush currentColorBrush = new SolidColorBrush(Color.FromRgb(85, 170, 255)); // синий(85, 170, 255) фиолетовый(113,96,232)
 
         private MeasuringShape CurrentMeasuringShape
         {

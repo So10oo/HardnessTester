@@ -1,10 +1,12 @@
 ﻿using Emgu.CV;
+using Emgu.CV.Structure;
 using Microsoft.Win32;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -147,17 +149,50 @@ namespace TestsSystems_HardnessTester
             #region поиск фигуры и отрисовка
             try
             {
-                if (tabItemVikkers.IsSelected)
-                {
-                    var r = FindShape.FindSqr(mat);
-                    drawingСanvas.PaintSquare(r.Size.Width, r.Angle, r.Center.X, r.Center.Y);
 
-                }
-                else if (tabItemBrinel.IsSelected)
+                Task taskFind = new Task(() =>
                 {
-                    var c = FindShape.FindCirl2(mat);
-                    drawingСanvas.PaintCircle(c.Radius, c.Center.X, c.Center.Y);
-                }
+                    Mat m = new Mat();
+                    Dispatcher.Invoke(() => m = ImageConverter.BitmapImage2Bitmap((BitmapImage)sreenImage.Source).ToMat());
+                    Emgu.CV.CvInvoke.CvtColor(m, m, Emgu.CV.CvEnum.ColorConversion.Bgr2Gray);
+
+                    #region находим окружность 
+                    var taskCircle = new Task<(CircleF, double)>(() =>
+                    {
+                        var cl1 = FindShape.FindCircle_v3(m);
+                        return cl1;
+                    });
+                    taskCircle.Start();
+                    #endregion
+
+
+                    taskCircle.Wait();
+        
+
+                    #region рисуем круг
+                    var c = taskCircle.Result.Item1;
+                    Dispatcher.Invoke(() =>
+                    {
+                        drawingСanvas.PaintCircle(c.Radius, c.Center.X, c.Center.Y);
+                    });
+                    #endregion
+
+                  
+
+                });
+                taskFind.Start();
+
+                //if (tabItemVikkers.IsSelected)
+                //{
+                //    var r = FindShape.FindSqr(mat);
+                //    drawingСanvas.PaintSquare(r.Size.Width, r.Angle, r.Center.X, r.Center.Y);
+
+                //}
+                //else if (tabItemBrinel.IsSelected)
+                //{
+                //    var c = FindShape.FindCirl2(mat);
+                //    drawingСanvas.PaintCircle(c.Radius, c.Center.X, c.Center.Y);
+                //}
             }
             catch (Exception ex)
             {

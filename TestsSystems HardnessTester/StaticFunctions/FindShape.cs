@@ -328,6 +328,7 @@ namespace TestsSystems_HardnessTester
             }
             return errorLine;
         }
+
         private static System.Drawing.Point GetPointPolar(float r1, float f1, float r2, float f2)
         {
             float c = (float)(Cos(f1) / Cos(f2));
@@ -335,6 +336,7 @@ namespace TestsSystems_HardnessTester
             float x = (float)((r1 - y * Sin(f1)) / Cos(f1));
             return System.Drawing.Point.Round(new PointF(x, y));
         }
+
         private static VectorOfVectorOfPoint DeleteSmallCntrs(VectorOfVectorOfPoint input)
         {    
             List<int> ints = new List<int>();
@@ -371,7 +373,7 @@ namespace TestsSystems_HardnessTester
             return res;
         }
 
-        public static CircleF FindCirl1(Mat image)
+        public static CircleF FindCircle_v1(Mat image)
         {
             Mat src = image.Clone();
            // CvInvoke.CvtColor(src, src, ColorConversion.Bgr2Gray);
@@ -462,7 +464,7 @@ namespace TestsSystems_HardnessTester
             #endregion
         }
 
-        public static CircleF FindCirl2(Mat image)
+        public static CircleF FindCircle_v2(Mat image)
         {
             var canny = new Mat();
             CvInvoke.BilateralFilter(image.Clone(), image, -1, 15, 15, Emgu.CV.CvEnum.BorderType.Constant);//50 50 
@@ -515,6 +517,102 @@ namespace TestsSystems_HardnessTester
 
             return circles[0];
         }
+
+        public static (CircleF, double) FindCircle_v3(Mat m)
+        {
+            #region метод
+
+            #region фильтры
+
+            CvInvoke.BilateralFilter(m.Clone(), m, -1, 15, 15, Emgu.CV.CvEnum.BorderType.Constant);
+            CvInvoke.MedianBlur(m, m, 15);
+            CvInvoke.MedianBlur(m, m, 15);
+            #endregion
+
+            #region возможно тут будет сложное вычисление порогового значения 
+            Mat edges = new Mat(m.Height, m.Width, DepthType.Cv8U, 1);//(m.Size, DepthType.Cv8U, 1);
+            Mat dx = new Mat();
+            Mat dy = new Mat();
+            var cannyThreshold = 70;
+            CvInvoke.Sobel(m, dx, DepthType.Cv16S, 1, 0, 3, 1, 0, BorderType.Replicate);
+            CvInvoke.Sobel(m, dy, DepthType.Cv16S, 0, 1, 3, 1, 0, BorderType.Replicate);
+            CvInvoke.Canny(dx, dy, edges, Math.Max(1, cannyThreshold / 2), cannyThreshold);
+            #endregion
+
+            #region расстояние в глобальные переменные 
+            Mat temp = new Mat();
+            var dist_img = new Matrix<float>(edges.Rows, edges.Cols);
+            CvInvoke.BitwiseNot(edges, temp);
+            CvInvoke.DistanceTransform(temp, dist_img, null, DistType.L2, 5);
+            #endregion
+
+            #region находим окружности
+            double circleAccumulatorThreshold = 150;
+            CircleF[] circles = CvInvoke.HoughCircles(m, HoughModes.Gradient, 2.0, 1, cannyThreshold,
+        circleAccumulatorThreshold, minRadius: Math.Min(m.Width, m.Height) / 20, maxRadius: Math.Min(m.Width, m.Height) / 2);
+            #endregion
+
+            #region сортируем окружности  
+            var circleListAndError = new List<(CircleF, double)>();
+            for (int i = 0; i < circles.Length; i++)
+                circleListAndError.Add((circles[i], ErrorDistCircleMichner(circles[i], in dist_img)));
+
+
+
+            var cl1 = circleListAndError.Count != 0 ? circleListAndError.Aggregate((c1, c2) => c1.Item2 < c2.Item2 ? c1 : c2) : (new CircleF(), double.MaxValue);
+
+            return cl1;
+            #endregion
+
+            #endregion
+        }
+
+        private static float ErrorDistCircleMichner(CircleF c, in Matrix<float> mat)
+        {
+            float numberPoints = 0;
+            float errorDistCircle = 0;
+            int x_center = (int)c.Center.X;
+            int y_center = (int)c.Center.Y;
+            int radius = (int)c.Radius;
+
+            if (x_center + radius >= mat.Width || y_center + radius >= mat.Height || x_center - radius < 0 || y_center - radius < 0)
+                return float.MaxValue;
+
+            int x, y, delta;
+            x = 0;
+            y = radius;
+            delta = 3 - 2 * radius;
+            while (x < y)
+            {
+                errorDistCircle += mat[y_center + y, x_center + x];
+                errorDistCircle += mat[y_center + y, x_center - x];
+                errorDistCircle += mat[y_center - y, x_center + x];
+                errorDistCircle += mat[y_center - y, x_center - x];
+                errorDistCircle += mat[y_center + x, x_center + y];
+                errorDistCircle += mat[y_center + x, x_center - y];
+                errorDistCircle += mat[y_center - x, x_center + y];
+                errorDistCircle += mat[y_center - x, x_center - y];
+                numberPoints += 8;
+                if (delta < 0)
+                    delta += 4 * x + 6;
+                else
+                {
+                    delta += 4 * (x - y) + 10;
+                    y--;
+                }
+                x++;
+            }
+            if (x == y)
+            {
+                errorDistCircle += mat[y_center + x, x_center + y];
+                errorDistCircle += mat[y_center + x, x_center - y];
+                errorDistCircle += mat[y_center - x, x_center + y];
+                errorDistCircle += mat[y_center - x, x_center - y];
+                numberPoints += 4;
+            }
+            return errorDistCircle / numberPoints;
+        }
+
         private static double PercentageWhitePixels(Mat image)
         {
             int height = image.Height;
@@ -562,6 +660,7 @@ namespace TestsSystems_HardnessTester
             var res = new VectorOfVectorOfPoint(conts);
             return res;
         }
+
         private static bool ConturAtEdge(VectorOfPoint input, System.Drawing.Point Min, System.Drawing.Point Max)
         {
             bool PointAtRectangle;
