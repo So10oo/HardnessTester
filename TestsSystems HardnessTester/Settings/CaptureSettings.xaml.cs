@@ -29,8 +29,18 @@ namespace TestsSystems_HardnessTester
 
             #region считываем настройки камеры 
 
-            //string path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "CaptureSettings.json");
-            //this.captureSettingsValue = captureSettingsValue.Read(path);
+            #region тестируем
+            string path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "CaptureSettings.json");
+            this.captureSettingsValue = captureSettingsValue.Read(path);
+            SldBrightness.Value = captureSettingsValue.Brightness;
+            SldContrast.Value = captureSettingsValue.Contrast;
+            SlrSaturation.Value = captureSettingsValue.Saturation;
+            SlrSharpness.Value = captureSettingsValue.Sharpness;
+            SlrGamma.Value = captureSettingsValue.Gamma;
+            #endregion
+
+
+
 
             foreach (var item in comboBoxResolution.Items)
             {
@@ -38,12 +48,11 @@ namespace TestsSystems_HardnessTester
                     if (textBlock.Text == (capture.Width.ToString() + "x" + capture.Height.ToString()))
                     {
                         comboBoxResolution.SelectedItem = item;
-                        //captureSettings.Width=capture.Width; 
-                        //captureSettings.Height=capture.Height;
-                        //captureSettingsValue.SetSize(capture.Width, capture.Height);
                         break;
                     }
             }
+
+
             #endregion
 
         }
@@ -54,6 +63,7 @@ namespace TestsSystems_HardnessTester
             var slider = (Slider)sender;
             double value = slider.Value;
             capture.Set(Emgu.CV.CvEnum.CapProp.Brightness, value);
+            captureSettingsValue.Brightness = value;
         }
 
         private void SldContrast_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -61,6 +71,7 @@ namespace TestsSystems_HardnessTester
             var slider = (Slider)sender;
             double value = slider.Value;
             capture.Set(Emgu.CV.CvEnum.CapProp.Contrast, value);
+            captureSettingsValue.Contrast = value;
         }
 
         private void SlrSharpness_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -68,6 +79,7 @@ namespace TestsSystems_HardnessTester
             var slider = (Slider)sender;
             double value = slider.Value;
             capture.Set(Emgu.CV.CvEnum.CapProp.Sharpness, value);
+            captureSettingsValue.Sharpness = value;
         }
 
         private void SlrSaturation_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -75,6 +87,7 @@ namespace TestsSystems_HardnessTester
             var slider = (Slider)sender;
             double value = slider.Value;
             capture.Set(Emgu.CV.CvEnum.CapProp.Saturation, value);
+            captureSettingsValue.Saturation = value;
         }
 
         private void SlrGamma_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -94,7 +107,9 @@ namespace TestsSystems_HardnessTester
                 slider.Value = 0.7;
             else
                 slider.Value = 1.0;
+
             capture.Set(Emgu.CV.CvEnum.CapProp.Gamma, value);
+            captureSettingsValue.Gamma = value;
         }
 
         private void SlrGain_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -103,6 +118,7 @@ namespace TestsSystems_HardnessTester
             var slider = (Slider)sender;
             double value = slider.Value;
             capture.Set(Emgu.CV.CvEnum.CapProp.Gain, value);
+            captureSettingsValue.Gain = value;
         }
 
         private void SlrExposure_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -111,6 +127,7 @@ namespace TestsSystems_HardnessTester
             var slider = (Slider)sender;
             double value = slider.Value;
             capture.Set(Emgu.CV.CvEnum.CapProp.Exposure, value);
+            captureSettingsValue.Exposure = value;
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -178,6 +195,7 @@ namespace TestsSystems_HardnessTester
         public double Sharpness { get; set; }
         public double Saturation { get; set; }
         public double Gamma { get; set; }
+
         public double Gain { get; set; }
         public double Exposure { get; set; }
         public double GainAuto { get; set; }

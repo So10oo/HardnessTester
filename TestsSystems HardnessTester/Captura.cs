@@ -75,9 +75,9 @@ namespace TestsSystems_HardnessTester
 
         }
 
-        readonly string open_mes = $"Режим \n видео";
+        readonly string open_mes = $"Видео";
 
-        readonly string close_mes = $"     Сделать\n  фотографию";
+        readonly string close_mes = $"Фото";
 
         private void VideoStop()
         {

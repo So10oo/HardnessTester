@@ -59,9 +59,10 @@
                                         </StackPanel>
                                         <TextBlock x:Name="StyleTitle" HorizontalAlignment="Center" VerticalAlignment="Center" 
                                            Text="{TemplateBinding Title}" Style="{DynamicResource TitleTextBlock}"/>
-                                        <Image Source="{TemplateBinding Icon}" HorizontalAlignment="Left" 
-                                       VerticalAlignment="Center" Width="16" Height="16" 
-                                       Margin="6,0,0,0"/>
+                                        <Border BorderThickness="0.1" BorderBrush="Red" 
+                                                VerticalAlignment="Center"  HorizontalAlignment="Left" Width="16" Height="16" Margin="6,0,0,0"> 
+                                        <Image Source="{TemplateBinding Icon}"/>
+                                        </Border>
                                     </Grid>
                                     <ContentPresenter Grid.Row="1"/>
                                 </Grid>

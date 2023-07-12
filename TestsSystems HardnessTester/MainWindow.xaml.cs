@@ -149,26 +149,17 @@ namespace TestsSystems_HardnessTester
             #region поиск фигуры и отрисовка
             try
             {
-
                 Task taskFind = new Task(() =>
                 {
-                    Mat m = new Mat();
-                    Dispatcher.Invoke(() => m = ImageConverter.BitmapImage2Bitmap((BitmapImage)sreenImage.Source).ToMat());
-                    Emgu.CV.CvInvoke.CvtColor(m, m, Emgu.CV.CvEnum.ColorConversion.Bgr2Gray);
-
                     #region находим окружность 
                     var taskCircle = new Task<(CircleF, double)>(() =>
                     {
-                        var cl1 = FindShape.FindCircle_v3(m);
+                        var cl1 = FindShape.FindCircle_v3(mat);
                         return cl1;
                     });
                     taskCircle.Start();
                     #endregion
-
-
                     taskCircle.Wait();
-        
-
                     #region рисуем круг
                     var c = taskCircle.Result.Item1;
                     Dispatcher.Invoke(() =>
@@ -176,8 +167,6 @@ namespace TestsSystems_HardnessTester
                         drawingСanvas.PaintCircle(c.Radius, c.Center.X, c.Center.Y);
                     });
                     #endregion
-
-                  
 
                 });
                 taskFind.Start();
@@ -251,6 +240,7 @@ namespace TestsSystems_HardnessTester
 
         private void BtmClearShape_Click(object sender, RoutedEventArgs e)
         {
+            //var a = this.Icon;
             drawingСanvas.ClearShapes();
         }
 

@@ -7,9 +7,17 @@
         mc:Ignorable="d"
         Title=""
         Height="900" Width="1800"  
-        MinHeight="750" MinWidth="1200"
+        MinHeight="50" MinWidth="200"
         WindowStartupLocation="CenterScreen"
+   
         Style="{DynamicResource WindowStyle}" x:Name="mainWin">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources\Image.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
@@ -41,27 +49,32 @@
                 <ColumnDefinition Width="10*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Separator Background="#7160E8" Margin="0" Padding="0" Grid.ColumnSpan="12"/>
-            <Button x:Name="btmConnectToCamer" Content="Подключиться&#x0a;    к камере" Margin="5,5,0,0" 
-                        Style="{StaticResource ButtonStyle}" Click="BtmConnectToCamer_Click"  
-                    Grid.Column="0" Grid.Row="1" />
-            <Button x:Name="btmVideoStopStart" Content="Режим&#x0a; видео" Margin="5,5,0,0"
+            <Button x:Name="btmConnectToCamer"   Margin="5,5,0,0" Content="Подключение"
+                    Style="{StaticResource ButtonStyle}" 
+                    Click="BtmConnectToCamer_Click" 
+                    Tag="{StaticResource usbDrawingImage1}"
+                    Grid.Column="0" Grid.Row="1" >
+            </Button>
+            <Button x:Name="btmVideoStopStart" Content="Видео" Margin="5,5,0,0"
                          Style="{StaticResource ButtonStyle}" Click="BtmVideoStopStart_Click"
-                    Grid.Column="1" Grid.Row="1"/>
+                    Grid.Column="1" Grid.Row="1" 
+                    Tag="{StaticResource video_cameraDrawingImage}"/>
             <Button x:Name="btmFindShape" Content="Поиск"  Margin="5,5,0,0"
                     Style="{StaticResource ButtonStyle}" Click="BtmFindShape_Click" 
-                    Grid.Column="2" Grid.Row="1"/>
+                    Grid.Column="2" Grid.Row="1" Tag="{StaticResource FindDrawingImage}"/>
             <Button x:Name="btmOpenImage" Content="Открыть" Margin="5,5,0,0" 
-                    Grid.Column="3" Grid.Row="1"
+                    Grid.Column="3" Grid.Row="1" Tag="{StaticResource openDrawingImage}"
                     Style="{StaticResource ButtonStyle}" Click="BtmOpenImage_Click" />
             <Button x:Name="btmSaveImg" Content="Сохранить" Margin="5,5,0,0" 
-                    Grid.Column="4" Grid.Row="1"
+                    Grid.Column="4" Grid.Row="1" Tag="{StaticResource saveDrawingImage}" 
                     Style="{StaticResource ButtonStyle}" Click="BtmSaveImg_Click"/>
             <Button x:Name="btmClearShape" Content="Отчистить" Margin="5,5,0,0"
-                    Grid.Column="5" Grid.Row="1"
+                    Grid.Column="5" Grid.Row="1" Tag ="{StaticResource ClearDrawingImage}" 
                      Style="{StaticResource ButtonStyle}" Click="BtmClearShape_Click" Height="44" VerticalAlignment="Top"/>
-            <Button x:Name="btmCaptureSettings" Content="Настройки&#x0a;   камеры" Margin="5,5,0,0"
-                    Grid.Column="6" Grid.Row="1"
-                     Style="{StaticResource ButtonStyle}" Click="BtmCaptureSettings_Click" Height="44" VerticalAlignment="Top" />
+            <Button x:Name="btmCaptureSettings" Content="Настройки" Margin="5,5,0,0"
+                    Grid.Column="6" Grid.Row="1" Tag="{StaticResource SettigsDrawingImage}"
+                     Style="{StaticResource ButtonStyle}" 
+                    Click="BtmCaptureSettings_Click" Height="44" VerticalAlignment="Top" />
             <!--Button Content="1" Margin="5,5,0,0" Grid.Column="7" Grid.Row="1"
                      Style="{StaticResource ButtonStyle}" />
             <Button Content="2" Margin="5,5,0,0" Grid.Column="8" Grid.Row="1"
@@ -150,7 +163,7 @@
                                     Grid.Column="1" Grid.Row="1">
                             <Button x:Name="btmAddVikkerstest"  Content="Добавить" 
                                         VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                                       Style="{StaticResource ButtonStyle}" Click="BtmAddVikkerstest_Click" />
+                                       Style="{StaticResource ButtonStyleNoImage}" Click="BtmAddVikkerstest_Click" />
                         </Border>
                         <TextBlock Text="Испытания"
                             Grid.Column="1" Grid.Row="3"
@@ -170,7 +183,7 @@
                              >
                             <Button x:Name="btmDeleteVikkersTests" 
                                 Content="Удалить"
-                                Style="{StaticResource ButtonStyle}" Click="BtmDeleteVikkersTests_Click"/>
+                                Style="{StaticResource ButtonStyleNoImage}" Click="BtmDeleteVikkersTests_Click"/>
                         </Border>
                     </Grid>
                 </TabItem>
@@ -208,7 +221,7 @@
                                     Grid.Column="1" Grid.Row="1">
                             <Button x:Name="btmAddBrineltest"  Content="Добавить" 
                                         VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                                       Style="{StaticResource ButtonStyle}" Click="BtmAddBrineltest_Click"/>
+                                       Style="{StaticResource ButtonStyleNoImage}" Click="BtmAddBrineltest_Click"/>
                         </Border>
                         <TextBlock Text="Испытания"
                             Grid.Column="1" Grid.Row="3"
@@ -229,7 +242,7 @@
                              >
                             <Button x:Name="btmDeleteBrinelTests" 
                                 Content="Удалить"
-                                Style="{StaticResource ButtonStyle}" Click="BtmDeleteBrinelTests_Click"/>
+                                Style="{StaticResource ButtonStyleNoImage}" Click="BtmDeleteBrinelTests_Click"/>
                         </Border>
                     </Grid>
                 </TabItem>
@@ -292,7 +305,7 @@
                                     Grid.Column="1" Grid.Row="1">
                                 <Button x:Name="btmSetupСalibration"  Content="Задать"  
                                         VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                                       Style="{StaticResource ButtonStyle}" Click="BtmSetupСalibration_Click"/>
+                                       Style="{StaticResource ButtonStyleNoImage}" Click="BtmSetupСalibration_Click"/>
                             </Border>
                         </Grid>
                         <Border Grid.ColumnSpan="2" Grid.Row="2">
@@ -305,7 +318,7 @@
             </TabControl>
 
             <Button x:Name="btmCreatReport" Content="Создать отчёт" 
-                    Style="{StaticResource ButtonStyle}" Grid.Row="1" Grid.Column="1" 
+                    Style="{StaticResource ButtonStyleNoImage}" Grid.Row="1" Grid.Column="1" 
                     Click="BtmCreatReport_Click"   HorizontalAlignment="Stretch"  />
         </Grid>
 
