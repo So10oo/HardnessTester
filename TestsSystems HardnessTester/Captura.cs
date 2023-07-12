@@ -62,7 +62,6 @@ namespace TestsSystems_HardnessTester
             {
                 capture.Pause();
                 CaptureInProgress = false;
-                ((Button)sender).Content = open_mes;
             }
             else
             {
@@ -70,13 +69,11 @@ namespace TestsSystems_HardnessTester
 
                 capture.Start();
                 CaptureInProgress = true;
-                ((Button)sender).Content = close_mes;
             }
 
         }
 
         readonly string open_mes = $"Видео";
-
         readonly string close_mes = $"Фото";
 
         private void VideoStop()
@@ -84,7 +81,6 @@ namespace TestsSystems_HardnessTester
             if (CaptureInProgress)
             {
                 capture.Pause();
-                btmVideoStopStart.Content = open_mes;
                 CaptureInProgress = false;
             }
 
@@ -94,13 +90,26 @@ namespace TestsSystems_HardnessTester
             if (CaptureInProgress)
             {
                 capture.Start();
-                btmVideoStopStart.Content = close_mes;
                 CaptureInProgress = true;
             }
 
         }
 
-        private bool CaptureInProgress { get; set; }
+        private bool captureInProgress;
+        private bool CaptureInProgress {
+            get 
+            {
+                return captureInProgress;
+            }
+            set
+            {
+                if(value)
+                    btmVideoStopStart.Content = close_mes;
+                else
+                    btmVideoStopStart.Content = open_mes;
+                captureInProgress = value;
+            }
+        }
 
         private void BtmConnectToCamer_Click(object sender, RoutedEventArgs e)
         {
@@ -115,7 +124,6 @@ namespace TestsSystems_HardnessTester
                 capture.Set(CapProp.FrameWidth, captureSettingsValue.Width);
                 capture.Set(CapProp.FrameHeight, captureSettingsValue.Height);
                 SetCaptureСontainer(capture.Width, capture.Height);
-                btmVideoStopStart.Content = close_mes;
                 CaptureInProgress = true;
                 capture.ImageGrabbed += ProcessFrame;
                 capture.Start();
