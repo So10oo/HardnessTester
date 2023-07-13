@@ -29,18 +29,18 @@ namespace TestsSystems_HardnessTester
             }
         }
 
-        public static readonly DependencyProperty TextСolorProperty = DependencyProperty.Register("TextСolor", typeof(SolidColorBrush), typeof(MeasuringShape),
+        public static readonly DependencyProperty TextColorProperty = DependencyProperty.Register("TextСolor", typeof(SolidColorBrush), typeof(MeasuringShape),
           new FrameworkPropertyMetadata(Brushes.Red, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
 
-        public SolidColorBrush TextСolor
+        public SolidColorBrush TextColor
         {
             get
             {
-                return (SolidColorBrush)GetValue(TextСolorProperty);
+                return (SolidColorBrush)GetValue(TextColorProperty);
             }
             set
             {
-                SetValue(TextСolorProperty, value);
+                SetValue(TextColorProperty, value);
             }
         }
 
@@ -114,7 +114,7 @@ namespace TestsSystems_HardnessTester
                     FlowDirection.LeftToRight,
                     new Typeface("Times New Roman"),
                     TextSize,
-                    TextСolor, 1.0);
+                    TextColor, 1.0);
                 var textWidth = formattedText.Width;
                 var textHeight = formattedText.Height;
                 var midPoint = GetCenter();
@@ -170,6 +170,7 @@ namespace TestsSystems_HardnessTester
         public MeasuringShape()
         {
             this.Stroke = colorBrush;
+            this.TextColor = colorBrush;
             //this.StrokeThickness = strokeThickness * multiplierStrokeThickness;
             this.Fill = Brushes.Transparent;
             this.RenderTransform = translateTransformPostingShape;

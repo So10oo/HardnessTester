@@ -85,8 +85,8 @@ namespace TestsSystems_HardnessTester
 
         }
 
-        readonly string open_mes = $"Видео";
-        readonly string close_mes = $"Фото";
+        readonly string video = "Видео";
+        readonly string photo = "Фото ";
 
         private void VideoStop()
         {
@@ -121,13 +121,13 @@ namespace TestsSystems_HardnessTester
                 {   
                     fotoDrawingImage = (DrawingImage)Application.Current.Resources["FotoDrawingImage"];
                     btmVideoStopStart.Tag = fotoDrawingImage;
-                    btmVideoStopStart.Content = close_mes;
+                    btmVideoStopStart.Content = photo;
                 }
                 else
                 {
-                    fotoDrawingImage = (DrawingImage)Application.Current.Resources["video_cameraDrawingImage"];
+                    fotoDrawingImage = (DrawingImage)Application.Current.Resources["VideoDrawingImage"];
                     btmVideoStopStart.Tag = fotoDrawingImage;
-                    btmVideoStopStart.Content = open_mes;
+                    btmVideoStopStart.Content = video;
                 }
                 captureInProgress = value;
             }

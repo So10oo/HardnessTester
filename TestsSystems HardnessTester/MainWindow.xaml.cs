@@ -12,7 +12,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace TestsSystems_HardnessTester
 {
@@ -184,7 +183,6 @@ namespace TestsSystems_HardnessTester
                 //{
                 //    var r = FindShape.FindSqr(mat);
                 //    drawingСanvas.PaintSquare(r.Size.Width, r.Angle, r.Center.X, r.Center.Y);
-
                 //}
                 //else if (tabItemBrinel.IsSelected)
                 //{

@@ -24,11 +24,11 @@ namespace TestsSystems_HardnessTester
                 if (currentMeasuringShape != null)
                 {
                     currentMeasuringShape.Stroke = MeasuringShape.colorBrush;
-                    currentMeasuringShape.TextСolor = MeasuringShape.colorBrush;
+                    currentMeasuringShape.TextColor = MeasuringShape.colorBrush;
                 }
                 currentMeasuringShape= value;             
                 currentMeasuringShape.Stroke = currentColorBrush;
-                currentMeasuringShape.TextСolor = currentColorBrush;
+                currentMeasuringShape.TextColor = currentColorBrush;
             }
         }
         private Point startPoint = new Point();
@@ -164,9 +164,6 @@ namespace TestsSystems_HardnessTester
                 return;
             else
                 //e.Handled = true;
-
-
-
             ActionsStatus = Actions.None;
         }
 
@@ -228,7 +225,8 @@ namespace TestsSystems_HardnessTester
         {
             var _circle = CreatShape<MeasuringСircle>(new Point(X - R, Y - R));
             _circle.Posting(X, Y + R, 2 * R, -90);
-            CurrentMeasuringShape = _circle;
+            if(Actions.None == _actions)
+                CurrentMeasuringShape = _circle;
         }
 
         public void PaintSquare(float side, float angle, float X, float Y)
