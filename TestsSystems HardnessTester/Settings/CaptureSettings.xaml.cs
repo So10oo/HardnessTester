@@ -39,9 +39,6 @@ namespace TestsSystems_HardnessTester
             SlrGamma.Value = captureSettingsValue.Gamma;
             #endregion
 
-
-
-
             foreach (var item in comboBoxResolution.Items)
             {
                 if (item is TextBlock textBlock)
@@ -243,7 +240,7 @@ namespace TestsSystems_HardnessTester
             {
                 MessageBox.Show("Настройки камеры не считались : " + e.Message);
             }
-            return null;
+            return new CaptureSettingsValue();
         }
     }
 }

@@ -9,6 +9,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -54,6 +55,9 @@ namespace TestsSystems_HardnessTester
 
         protected override void OnClosing(CancelEventArgs e)
         {
+            //if(TaskConectCamera!=null)
+            //    TaskConectCamera.Wait();
+
             //логика связанная с камерой 
             capture?.Dispose();
             e.Cancel = false;
@@ -142,7 +146,12 @@ namespace TestsSystems_HardnessTester
         {
             VideoStop();//выключить видео если оно воспроизводится 
             if (sreenImage.Source == null)
+            {
+                txtMessageCanvas.FontSize = Math.Min(drawingСanvas.ActualHeight, drawingСanvas.ActualWidth) * 0.04;
+                txtMessageCanvas.Foreground = new SolidColorBrush(Colors.Red);
+                txtMessageCanvas.BeginAnimation(TextBlock.TextProperty, Animations.CreatStrindAnimation("Изображение не было найдено!", 0, 2.5));
                 return;
+            }
 
             Emgu.CV.Mat mat = ImageConverter.BitmapImage2Bitmap((BitmapImage)sreenImage.Source).ToMat();
             Emgu.CV.CvInvoke.CvtColor(mat, mat, Emgu.CV.CvEnum.ColorConversion.Bgr2Gray);
@@ -247,7 +256,12 @@ namespace TestsSystems_HardnessTester
         private void BtmCaptureSettings_Click(object sender, RoutedEventArgs e)
         {
             if (capture == null)
+            {
+                txtMessageCanvas.FontSize = Math.Min(drawingСanvas.ActualHeight, drawingСanvas.ActualWidth) * 0.04;
+                txtMessageCanvas.Foreground = new SolidColorBrush(Colors.Red);
+                txtMessageCanvas.BeginAnimation(TextBlock.TextProperty, Animations.CreatStrindAnimation("Камера не подключенна!", 0, 2.5));
                 return;
+            }
 
             WindowCaptureSettings windowCaptureSettings =
                 new WindowCaptureSettings(capture, drawingСanvas, sreenImage, captureSettingsValue);
@@ -341,9 +355,17 @@ namespace TestsSystems_HardnessTester
             testing.CreateProtocol();
         }
 
+
+
+
+
         #endregion
 
-    
+        private void textBoxСalibration_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                BtmSetupСalibration_Click(null, null);
+        }
     }
 
 }
