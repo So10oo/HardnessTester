@@ -136,6 +136,7 @@ namespace TestsSystems_HardnessTester
        // Task TaskConectCamera;
         private void BtmConnectToCamer_Click(object sender, RoutedEventArgs e)
         {
+            drawingСanvas.ClearShapes();
 
             if (capture != null)
             {

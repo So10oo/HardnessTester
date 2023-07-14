@@ -44,10 +44,17 @@ namespace TestsSystems_HardnessTester
             else
                 e.Handled = true;
 
+            //if (e.ClickCount > 1)
+            //{
+            //    int d = 0;
+            //    d++;
+            //}
+          //  MessageBox.Show("1");
+
             startPoint = e.GetPosition(this);
             var _shape = VisualTreeHelper.HitTest(this, startPoint);
       
-            if (!(_shape.VisualHit is MeasuringShape))
+            if (!(_shape?.VisualHit is MeasuringShape))
             {
                 //var min = Math.Min(this.ActualHeight, this.ActualHeight);
                 switch (CurrentShape)
@@ -188,8 +195,9 @@ namespace TestsSystems_HardnessTester
 
         private void DrawingCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //ClearShapes();
+            ClearShapes();
         }
+
         #endregion
 
         #region piblic functions
@@ -210,8 +218,6 @@ namespace TestsSystems_HardnessTester
                     this.Children.Remove(_shape);
                     shapes.Remove(_shape);
                 }
-            //this.Children.Clear();
-            //shapes.Clear();
         }
 
 
@@ -232,7 +238,7 @@ namespace TestsSystems_HardnessTester
         public void PaintSquare(float side, float angle, float X, float Y)
         {
             var _sqare = CreatShape<MeasuringSquare>(new Point(X - side/2.0, Y - side/2.0));
-            _sqare.Posting(side*Math.Sqrt(2),45);
+            _sqare.Posting(side * Math.Sqrt(2), 45);
             _sqare.Rotation(angle);
             CurrentMeasuringShape = _sqare;
         }
@@ -273,7 +279,7 @@ namespace TestsSystems_HardnessTester
 
         #region Enum Canvas
 
-        private Actions _actions;
+        private Actions _actions = Actions.None;
         public Actions ActionsStatus { get => _actions; set => _actions = value; }
         public enum Actions
         {
@@ -309,10 +315,19 @@ namespace TestsSystems_HardnessTester
             this.MouseLeftButtonUp += DrawingCanvas_MouseLeftButtonUp;
             this.MouseRightButtonDown += DrawingCanvas_MouseRightButtonDown;
             this.MouseWheel += DrawingCanvas_MouseWheel;
-
-            //тестируется
+            //this.PreviewMouseLeftButtonUp += DrawingCanvas_PreviewMouseLeftButtonUp;
             this.SizeChanged += DrawingCanvas_SizeChanged;
         }
+
+        //private void DrawingCanvas_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    if (e.ClickCount > 1)
+        //    {
+        //        // Do double-click code  
+        //        // Code for FullScreen 
+        //        e.Handled = true;
+        //    }
+        //}
         #endregion
     }
 

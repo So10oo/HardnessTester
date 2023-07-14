@@ -157,27 +157,64 @@ namespace TestsSystems_HardnessTester
             #region поиск фигуры и отрисовка
             try
             {
-                Task taskFind = new Task(() =>
+
+                if (tabItemVikkers.IsSelected)
                 {
-                    #region находим окружность 
+                    var taskSquare = new Task<(RotatedRect, double)>(() =>
+                    {
+                        var sq1 = FindShape.FindSquare_v2(mat);
+                        return sq1;
+                    });
+                    Task _taskSquare = taskSquare.ContinueWith(t =>
+                    {
+                        var r = t.Result.Item1;
+                        Dispatcher.Invoke(() =>
+                        {
+                            drawingСanvas.PaintSquare(r.Size.Width, r.Angle, r.Center.X, r.Center.Y);
+                        });
+                    });
+                    taskSquare.Start();
+
+                }
+                else if (tabItemBrinel.IsSelected)
+                {
                     var taskCircle = new Task<(CircleF, double)>(() =>
                     {
                         var cl1 = FindShape.FindCircle_v3(mat);
                         return cl1;
+                    });  
+                    Task _taskCircle = taskCircle.ContinueWith(t =>
+                    {
+                        var c = t.Result.Item1;
+                        Dispatcher.Invoke(() =>
+                        {
+                            drawingСanvas.PaintCircle(c.Radius, c.Center.X, c.Center.Y);
+                        });
                     });
                     taskCircle.Start();
-                    #endregion
-                    taskCircle.Wait();
-                    #region рисуем круг
-                    var c = taskCircle.Result.Item1;
-                    Dispatcher.Invoke(() =>
-                    {
-                        drawingСanvas.PaintCircle(c.Radius, c.Center.X, c.Center.Y);
-                    });
-                    #endregion
+                }
 
-                });
-                taskFind.Start();
+                //Task taskFind = new Task(() =>
+                //{
+                //    #region находим окружность 
+                //    var taskCircle = new Task<(CircleF, double)>(() =>
+                //    {
+                //        var cl1 = FindShape.FindCircle_v3(mat);
+                //        return cl1;
+                //    });
+                //    taskCircle.Start();
+                //    #endregion
+                //    taskCircle.Wait();
+                //    #region рисуем круг
+                //    var c = taskCircle.Result.Item1;
+                //    Dispatcher.Invoke(() =>
+                //    {
+                //        drawingСanvas.PaintCircle(c.Radius, c.Center.X, c.Center.Y);
+                //    });
+                //    #endregion
+
+                //});
+                //taskFind.Start();
 
                 //if (tabItemVikkers.IsSelected)
                 //{

@@ -12,7 +12,9 @@ namespace TestsSystems_HardnessTester
 {
     internal static class FindShape
     {
-        public static RotatedRect FindSqr(Mat image)
+        #region для квадрата
+
+        public static RotatedRect FindSquare_v1(Mat image)
         {
             Mat src = image.Clone();
             Mat temp = src.Clone();
@@ -295,6 +297,184 @@ namespace TestsSystems_HardnessTester
 
         }
 
+        public static (RotatedRect, float) FindSquare_v2(Mat image)
+        {
+            Mat m = image.Clone();////клонируем чтобы использовать основную только для рисования
+            Mat canny = new Mat(m.Height, m.Width, DepthType.Cv8U, 1);
+
+            CvInvoke.MedianBlur(m, m, 15);
+            CvInvoke.BilateralFilter(m.Clone(), m, -1, 15, 15, Emgu.CV.CvEnum.BorderType.Constant);
+            #region возможно тут будет сложное вычисление порогового значения 
+            Mat dx = new Mat();
+            Mat dy = new Mat();
+            var cannyThreshold = 70;
+            CvInvoke.Sobel(m, dx, DepthType.Cv16S, 1, 0, 3, 1, 0, BorderType.Replicate);
+            CvInvoke.Sobel(m, dy, DepthType.Cv16S, 0, 1, 3, 1, 0, BorderType.Replicate);
+            CvInvoke.Canny(dx, dy, canny, Math.Max(1, cannyThreshold / 2), cannyThreshold);
+            #endregion
+
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            CvInvoke.FindContours(canny, contours, null, RetrType.Tree, ChainApproxMethod.ChainApproxNone);
+
+            contours = DeleteContursEdge(contours, canny, 1);
+            contours = DeleteSmallCntrs(contours);
+
+            canny.SetTo(new MCvScalar(0));
+            for (int i = 0; i < contours.Size; i++)
+                CvInvoke.DrawContours(canny, contours, i, new MCvScalar(255));
+
+            #region дистанционное преобразование
+            var canny_inv = new Mat(new System.Drawing.Size(canny.Width, canny.Height), DepthType.Cv8U, 1);
+            Matrix<float> dist_img = new Matrix<float>(canny.Rows, canny.Cols);
+            CvInvoke.BitwiseNot(canny, canny_inv);
+            CvInvoke.DistanceTransform(canny_inv, dist_img, null, DistType.L2, 5);
+            #endregion
+
+            #region настройки
+            //int H = 100;
+            //int HY = canny.Height / H;
+            //int HX = canny.Width / H;
+            double angleResolutio = PI / 90.0;
+            double errorK = 0.1 * angleResolutio;
+            double errorB = Min(canny.Height, canny.Width) * 0.05;
+            #endregion
+
+            #region находим линии
+            VectorOfPointF linesVector = new VectorOfPointF();
+
+            CvInvoke.HoughLines(canny, linesVector, 1, angleResolutio, 50);//30->50
+            int length = linesVector.Size;//чтобы на каждой иттерации не пересчитывалось.
+            //for (var i = 0; i < linesVector.Size; i++)
+            //{
+            //    var rho = linesVector[i].X;
+            //    var theta = linesVector[i].Y;
+            //    var pt1 = new System.Drawing.Point();
+            //    var pt2 = new System.Drawing.Point();
+            //    var a = Math.Cos(theta);
+            //    var b = Math.Sin(theta);
+            //    var x0 = a * rho;
+            //    var y0 = b * rho;
+            //    pt1.X = (int)Math.Round(x0 + m.Width * 2 * (-b));
+            //    pt1.Y = (int)Math.Round(y0 + m.Width * 2 * (a));
+            //    pt2.X = (int)Math.Round(x0 - m.Width * 2 * (-b));
+            //    pt2.Y = (int)Math.Round(y0 - m.Width * 2 * (a));
+            //    CvInvoke.Line(canny, pt1, pt2, new MCvScalar(255));
+            //}
+            //image = canny;
+            #endregion
+
+            #region находим пары параллельных прямых
+            var indexLinesParallel = new List<(int, int)>();
+            for (int i = 0; i < length; i++)
+                for (int j = i + 1; j < length; j++)
+                {
+                    if ((Abs(Abs(linesVector[j].Y) - Abs(linesVector[i].Y)) <= errorK)
+                        && (Abs(linesVector[j].X - linesVector[i].X) >= errorB))
+                        indexLinesParallel.Add((i, j));
+                }
+            #endregion
+
+            #region находим перпендикулярные пары для параллельных пар,вычисляем для них точки, смотрим насколько он похож на квадрат
+            var RectsAndErrorDist = new List<(RotatedRect, float)>(length);
+            var p4 = new System.Drawing.Point[4];
+            length = indexLinesParallel.Count;
+            for (int i = 0; i < length; i++)
+            {
+                for (int j = i + 1; j < length; j++)
+                {
+                    int i1 = indexLinesParallel[i].Item1;
+                    int j1 = indexLinesParallel[i].Item2;
+                    int i2 = indexLinesParallel[j].Item1;
+                    int j2 = indexLinesParallel[j].Item2;
+                    var k1 = (linesVector[i1].Y + linesVector[j1].Y) / 2.0;
+                    var k2 = (linesVector[i2].Y + linesVector[j2].Y) / 2.0;
+                    if (Abs(Abs(Abs(k1) - Abs(k2)) - PI / 2.0) <= errorK)
+                    {
+                        float r1 = linesVector[i1].X;
+                        float f1 = linesVector[i1].Y;
+                        float r2 = linesVector[i2].X;
+                        float f2 = linesVector[i2].Y;
+                        p4[0] = GetPointPolar(r1, f1, r2, f2);
+                        if (p4[0].X < 0 || p4[0].Y < 0 || p4[0].X >= canny.Width || p4[0].Y >= canny.Height) continue;
+
+                        r1 = linesVector[i2].X;
+                        f1 = linesVector[i2].Y;
+                        r2 = linesVector[j1].X;
+                        f2 = linesVector[j1].Y;
+                        p4[1] = GetPointPolar(r1, f1, r2, f2);
+                        if (p4[1].X < 0 || p4[1].Y < 0 || p4[1].X >= canny.Width || p4[1].Y >= canny.Height) continue;
+
+                        r1 = linesVector[j2].X;
+                        f1 = linesVector[j2].Y;
+                        r2 = linesVector[j1].X;
+                        f2 = linesVector[j1].Y;
+                        p4[2] = GetPointPolar(r1, f1, r2, f2);
+                        if (p4[2].X < 0 || p4[2].Y < 0 || p4[2].X >= canny.Width || p4[2].Y >= canny.Height) continue;
+
+                        r1 = linesVector[j2].X;
+                        f1 = linesVector[j2].Y;
+                        r2 = linesVector[i1].X;
+                        f2 = linesVector[i1].Y;
+                        p4[3] = GetPointPolar(r1, f1, r2, f2);
+                        if (p4[3].X < 0 || p4[3].Y < 0 || p4[3].X >= canny.Width || p4[3].Y >= canny.Height) continue;
+
+                        var p1 = p4[0];
+                        var p2 = p4[1];
+                        double a1 = Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y));
+                        p1 = p4[2];
+                        double a2 = Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y));
+                        p2 = p4[3];
+                        double a3 = Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y));
+                        p1 = p4[0];
+                        double a4 = Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y));
+                        double aSum = (a1 + a2 + a3 + a4);
+                        double aAverage = aSum / 4.0;
+                        double errorSqr = Sqrt((aAverage - a1) * (aAverage - a1) + (aAverage - a2) * (aAverage - a2)
+                            + (aAverage - a3) * (aAverage - a3) + (aAverage - a4) * (aAverage - a4));
+                        errorSqr /= aAverage;
+                        if ((aSum > errorB * 4) && (errorSqr < 0.0952380952381))// -  отношения ско и среднего значения ребра при котором пара рёбер отличается на 15%(предел равен двум)
+                        {
+                            var poinsRect = (p4[0], p4[1], p4[2], p4[3]);
+                            float centerX = (float)((poinsRect.Item1.X + poinsRect.Item2.X + poinsRect.Item3.X + poinsRect.Item4.X) / 4.0);
+                            float centerY = (float)((poinsRect.Item1.Y + poinsRect.Item2.Y + poinsRect.Item3.Y + poinsRect.Item4.Y) / 4.0);
+                            PointF centerSqr = new PointF(centerX, centerY);
+                            var side = (float)aAverage;
+                            SizeF sideSqr = new SizeF(side, side);
+                            float angleSqr;
+                            if (poinsRect.Item1.X > centerX && poinsRect.Item1.Y > centerY)
+                                angleSqr = (float)Atan(((poinsRect.Item1.X - centerX) / (poinsRect.Item1.Y - centerY)));
+                            else if (poinsRect.Item2.X > centerX && poinsRect.Item2.Y > centerY)
+                                angleSqr = (float)Atan(((poinsRect.Item2.X - centerX) / (poinsRect.Item2.Y - centerY)));
+                            else if (poinsRect.Item3.X > centerX && poinsRect.Item3.Y > centerY)
+                                angleSqr = (float)Atan(((poinsRect.Item3.X - centerX) / (poinsRect.Item3.Y - centerY)));
+                            else if (poinsRect.Item4.X > centerX && poinsRect.Item4.Y > centerY)
+                                angleSqr = (float)Atan(((poinsRect.Item4.X - centerX) / (poinsRect.Item4.Y - centerY)));
+                            else
+                                angleSqr = 0;
+                            angleSqr = (float)(angleSqr * 180f / PI);
+                            angleSqr = (float)(45f - angleSqr);
+                            var rect = new RotatedRect(centerSqr, sideSqr, angleSqr);
+                            RectsAndErrorDist.Add((rect, ErrorDistRect(rect, dist_img)));
+                        }
+
+                    }
+                }
+            }
+            #endregion
+
+            if (RectsAndErrorDist.Count == 0)
+                return (new RotatedRect(), float.MaxValue);
+
+            RectsAndErrorDist.Sort((x, y) =>
+            {
+                return x.Item2.CompareTo(y.Item2);
+            });
+
+            var savePointsS = RectsAndErrorDist[0];
+
+            return savePointsS;
+        }
+
         private static float ErrorLine(System.Drawing.Point p1,System.Drawing.Point p2, in Matrix<float> mat)
         {
             float errorLine;
@@ -372,6 +552,37 @@ namespace TestsSystems_HardnessTester
             var res = new VectorOfVectorOfPoint(conts);
             return res;
         }
+
+        private static float ErrorDistRect(RotatedRect rect, in Matrix<float> mat)
+        {
+            var v = rect.GetVertices();
+
+            foreach (var item in v)
+            {
+                if (item.X < 0 || item.Y < 0 || (int)item.X >= mat.Width - 1 || (int)item.Y >= mat.Height - 1)
+                    return float.MaxValue;
+            }
+
+            var prevPoint = v[0];
+            var firstPoint = prevPoint;
+            var nextPoint = prevPoint;
+            var lastPoint = nextPoint;
+            float sumLine = 0;
+
+            for (var i = 1; i < v.Length; i++)
+            {
+                nextPoint = v[i];
+                sumLine += ErrorLine(System.Drawing.Point.Round(prevPoint), System.Drawing.Point.Round(nextPoint), in mat);
+                prevPoint = nextPoint;
+                lastPoint = prevPoint;
+            }
+            sumLine += ErrorLine(System.Drawing.Point.Round(lastPoint), System.Drawing.Point.Round(firstPoint), in mat);
+            return sumLine / 4f;
+        }
+
+        #endregion
+
+        #region для окружности
 
         public static CircleF FindCircle_v1(Mat image)
         {
@@ -846,6 +1057,8 @@ namespace TestsSystems_HardnessTester
             }
             return (errorCorect - errorCircle) / errorCorect;
         }
+
+        #endregion
     }
 
 }
