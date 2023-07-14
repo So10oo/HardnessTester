@@ -298,8 +298,8 @@ namespace TestsSystems_HardnessTester
                 return;
             }
 
-            WindowCaptureSettings windowCaptureSettings =
-                new WindowCaptureSettings(capture, drawingСanvas, sreenImage, captureSettingsValue);
+            Settings windowCaptureSettings =
+                new Settings(capture, drawingСanvas, sreenImage, captureSettingsValue);
             windowCaptureSettings.ShowDialog();
             //чтобы окончательно остановить процесс(почему-то после закрытия главного окна программа не выходит из отладки)
             windowCaptureSettings.Close();

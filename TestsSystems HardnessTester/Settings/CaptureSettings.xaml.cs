@@ -11,14 +11,14 @@ namespace TestsSystems_HardnessTester
     /// <summary>
     /// Логика взаимодействия для CaptureSettings.xaml
     /// </summary>
-    public partial class WindowCaptureSettings : Window
+    public partial class Settings : Window
     {
         readonly private VideoCapture capture;
         readonly private DrawingCanvas drawingCanvas;
         readonly private Image image;
         readonly private CaptureSettingsValue captureSettingsValue;
 
-        public WindowCaptureSettings(VideoCapture capture, DrawingCanvas drawingCanvas, Image image, CaptureSettingsValue captureSettingsValue)
+        public Settings(VideoCapture capture, DrawingCanvas drawingCanvas, Image image, CaptureSettingsValue captureSettingsValue)
         {
 
             this.capture = capture;
@@ -29,15 +29,14 @@ namespace TestsSystems_HardnessTester
 
             #region считываем настройки камеры 
 
-            #region тестируем
-            string path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "CaptureSettings.json");
-            this.captureSettingsValue = captureSettingsValue.Read(path);
+            //string path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Settings", "CaptureSettings.json");
+            //this.captureSettingsValue = captureSettingsValue.Read(path);
             SldBrightness.Value = captureSettingsValue.Brightness;
             SldContrast.Value = captureSettingsValue.Contrast;
             SlrSaturation.Value = captureSettingsValue.Saturation;
             SlrSharpness.Value = captureSettingsValue.Sharpness;
             SlrGamma.Value = captureSettingsValue.Gamma;
-            #endregion
+
 
             foreach (var item in comboBoxResolution.Items)
             {
@@ -48,8 +47,6 @@ namespace TestsSystems_HardnessTester
                         break;
                     }
             }
-
-
             #endregion
 
         }

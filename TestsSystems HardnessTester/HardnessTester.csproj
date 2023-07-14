@@ -195,6 +195,9 @@
     <Resource Include="Resources\IconAplication.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Icon1.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="IconAplication.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
