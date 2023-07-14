@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 
 namespace TestsSystems_HardnessTester
 {
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>

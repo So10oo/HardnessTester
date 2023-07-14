@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 
 namespace TestsSystems_HardnessTester
 {
+
     public partial class MainWindow
     {
         private VideoCapture capture;

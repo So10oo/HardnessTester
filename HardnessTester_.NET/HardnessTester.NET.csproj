@@ -62,7 +62,7 @@
     <Resource Include="Resources\IconAplication.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icon1.ico" />
+    <Resource Include="Resources\Icon1.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="IconAplication.ico" />

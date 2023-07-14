@@ -10,6 +10,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace TestsSystems_HardnessTester
 {
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     internal class Testing
     {
         readonly private List<Test> tests = new List<Test>();
