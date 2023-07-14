@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HardnessTester", "TestsSystems HardnessTester\HardnessTester.csproj", "{EE533258-581D-4B2D-B063-4A8369CF282A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HardnessTester.NET", "HardnessTester_.NET\HardnessTester.NET.csproj", "{19F92E5E-52B7-4716-B2E8-EA5E3137EF81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EE533258-581D-4B2D-B063-4A8369CF282A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE533258-581D-4B2D-B063-4A8369CF282A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE533258-581D-4B2D-B063-4A8369CF282A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19F92E5E-52B7-4716-B2E8-EA5E3137EF81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19F92E5E-52B7-4716-B2E8-EA5E3137EF81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19F92E5E-52B7-4716-B2E8-EA5E3137EF81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19F92E5E-52B7-4716-B2E8-EA5E3137EF81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

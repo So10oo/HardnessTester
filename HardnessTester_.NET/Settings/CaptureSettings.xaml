@@ -1,0 +1,181 @@
+﻿<Window x:Class="TestsSystems_HardnessTester.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestsSystems_HardnessTester"
+        mc:Ignorable="d"
+        Title="CaptureSettings" Height="450" Width="600"
+        MinHeight="350"
+       Style="{StaticResource WindowStyle}" Closed="Window_Closed">
+    <Grid Background="#1F1F1F">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*"></RowDefinition>
+            <RowDefinition Height="10*"></RowDefinition>
+            <RowDefinition Height="10*"></RowDefinition>
+            <RowDefinition Height="10*"></RowDefinition>
+            <RowDefinition Height="10*"></RowDefinition>
+            <RowDefinition Height="10*"></RowDefinition>
+            <RowDefinition Height="10*"></RowDefinition>
+            <RowDefinition Height="10*"></RowDefinition>
+            <RowDefinition Height="10*"></RowDefinition>
+            <RowDefinition Height="10*"></RowDefinition>
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions >
+            <ColumnDefinition Width="70*"></ColumnDefinition>
+            <ColumnDefinition Width="100"></ColumnDefinition>
+            <ColumnDefinition Width="222*"></ColumnDefinition>
+            <ColumnDefinition Width="50"></ColumnDefinition>
+            <ColumnDefinition Width="55"></ColumnDefinition>
+            <ColumnDefinition Width="70*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock  Text="Яркость"  
+                    Grid.Row="1"  Grid.Column="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Style="{StaticResource TextBlockStyle}"/>
+        <Slider x:Name="SldBrightness"
+            Minimum="-767" Maximum="768" SmallChange="1"
+            Grid.Column="2" Grid.Row="1"
+            VerticalAlignment="Center" 
+                ValueChanged="SldBrightness_ValueChanged"
+            Style="{StaticResource SliderStyle}"/>
+        <TextBlock Text= "{Binding ElementName=SldBrightness, Path=Value,StringFormat={}{0:F0}}"
+                   Grid.Column="3" Grid.Row="1"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Style="{StaticResource TextBlockStyle}" />
+
+        <TextBlock  Text="Контраст"  
+                    Grid.Row="2"  Grid.Column="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Style="{StaticResource TextBlockStyle}"/>
+        <Slider  x:Name="SldContrast"
+                 Minimum="-127" Maximum="768" SmallChange="1"
+            Grid.Column="2" Grid.Row="2"
+            VerticalAlignment="Center"
+                 ValueChanged="SldContrast_ValueChanged"
+            Style="{StaticResource SliderStyle}"
+             />
+        <TextBlock Text="{Binding ElementName=SldContrast, Path=Value,StringFormat={}{0:F0}}"
+                   Grid.Column="3" Grid.Row="2"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Style="{StaticResource TextBlockStyle}" />
+
+        <TextBlock  Text="Четкость"  
+                    Grid.Row="3"  Grid.Column="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Style="{StaticResource TextBlockStyle}"/>
+        <Slider x:Name="SlrSharpness"
+            Minimum="0" Maximum="128" SmallChange="1"
+            Grid.Column="2" Grid.Row="3"
+            VerticalAlignment="Center"
+                ValueChanged="SlrSharpness_ValueChanged"
+            Style="{StaticResource SliderStyle}"
+             />
+        <TextBlock Text="{Binding ElementName=SlrSharpness, Path=Value,StringFormat={}{0:F0}}"
+                   Grid.Column="3" Grid.Row="3"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Style="{StaticResource TextBlockStyle}" />
+
+        <TextBlock  Text="Цвета"  
+                    Grid.Row="4"  Grid.Column="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Style="{StaticResource TextBlockStyle}"/>
+        <Slider x:Name="SlrSaturation"
+            Minimum="0" Maximum="255" SmallChange="1"
+            Grid.Column="2" Grid.Row="4"
+            VerticalAlignment="Center"
+                ValueChanged="SlrSaturation_ValueChanged"
+            Style="{StaticResource SliderStyle}" 
+             />
+        <TextBlock Text="{Binding ElementName=SlrSaturation, Path=Value,StringFormat={}{0:F0}}"
+                   Grid.Column="3" Grid.Row="4"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Style="{StaticResource TextBlockStyle}" />
+
+        <TextBlock  Text="Гамма"  
+                    Grid.Row="5"  Grid.Column="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Style="{StaticResource TextBlockStyle}"/>
+        <Slider x:Name="SlrGamma" Minimum="0.35" Maximum="1" SmallChange="0.01"
+                Grid.Column="2" Grid.Row="5"
+                VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                ValueChanged="SlrGamma_ValueChanged"
+                Style="{StaticResource SliderStyle}"  
+             />
+        <TextBlock Text="{Binding ElementName=SlrGamma, Path=Value,StringFormat={}{0:F2}}"
+                   Grid.Column="3" Grid.Row="5"  
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Style="{StaticResource TextBlockStyle}" />
+
+        <TextBlock  Text="Усиление"  
+                    Grid.Row="6"  Grid.Column="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Style="{StaticResource TextBlockStyle}"/>
+        <Slider x:Name="SlrGain" IsEnabled="False"
+            Minimum="0" Maximum="111" SmallChange="1"
+            Grid.Column="2" Grid.Row="6"
+            VerticalAlignment="Center"
+                ValueChanged="SlrGain_ValueChanged"
+            Style="{StaticResource SliderStyle}" 
+             />
+        <TextBlock Text="{Binding ElementName=SlrGain, Path=Value,StringFormat={}{0:F0}}"
+                   Grid.Column="3" Grid.Row="6"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Style="{StaticResource TextBlockStyle}" />
+        <CheckBox x:Name="cbGain" Content="Авто" IsEnabled="False"
+                  Grid.Column="4" Grid.Row="6"
+                  Checked="CBGain_Changed" Unchecked="CBGain_Changed"
+                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                  Style="{StaticResource CheckBoxStyle}" />
+
+        <TextBlock  Text="Экспозиция"  
+                    Grid.Row="7"  Grid.Column="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Style="{StaticResource TextBlockStyle}"/>
+        <Slider x:Name="SlrExposure" IsEnabled="False"
+            Minimum="0" Maximum="3071" SmallChange="1"
+            Grid.Column="2" Grid.Row="7"
+            VerticalAlignment="Center"
+                ValueChanged="SlrExposure_ValueChanged"
+            Style="{StaticResource SliderStyle}" 
+             />
+        <TextBlock Text="{Binding ElementName=SlrExposure, Path=Value,StringFormat={}{0:F0}}"
+                   Grid.Column="3" Grid.Row="7"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Style="{StaticResource TextBlockStyle}" />
+        <CheckBox x:Name="cbExposure" Content="Авто" IsEnabled="False"
+                   Checked="CBExposure_Changed" Unchecked="CBExposure_Changed"
+                  Grid.Column="4" Grid.Row="7"
+                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                  Style="{StaticResource CheckBoxStyle}" />
+
+        <Border BorderBrush="Transparent" BorderThickness="1" 
+                Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="6">
+            <Grid>
+                <Grid.ColumnDefinitions >
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="180"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <ComboBox x:Name="comboBoxResolution"
+                    Grid.Column="1"  Height="27" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    VerticalAlignment="Center"
+                    SelectionChanged="ComboBox_SelectionChanged"
+                    Style="{StaticResource ComboBoxStyle}">
+                    <TextBlock Style="{StaticResource TextBlockStyle}">864x600</TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockStyle}">1296x972</TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockStyle}">1920x1080</TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockStyle}">2136x1602</TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockStyle}">2360x1770</TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockStyle}">2592x1458</TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockStyle}">1280x720</TextBlock>
+                </ComboBox>
+            </Grid>
+
+        </Border>
+
+    </Grid>
+</Window>
