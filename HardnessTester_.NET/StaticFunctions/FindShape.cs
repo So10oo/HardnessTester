@@ -305,12 +305,14 @@ namespace TestsSystems_HardnessTester
             CvInvoke.MedianBlur(m, m, 15);
             CvInvoke.BilateralFilter(m.Clone(), m, -1, 15, 15, Emgu.CV.CvEnum.BorderType.Constant);
             #region возможно тут будет сложное вычисление порогового значения 
-            Mat dx = new Mat();
-            Mat dy = new Mat();
+            //Mat dx = new Mat();
+            //Mat dy = new Mat();
             var cannyThreshold = 70;
-            CvInvoke.Sobel(m, dx, DepthType.Cv16S, 1, 0, 3, 1, 0, BorderType.Replicate);
-            CvInvoke.Sobel(m, dy, DepthType.Cv16S, 0, 1, 3, 1, 0, BorderType.Replicate);
-            CvInvoke.Canny(dx, dy, canny, Math.Max(1, cannyThreshold / 2), cannyThreshold);
+
+            //CvInvoke.Sobel(m, dx, DepthType.Cv16S, 1, 0, 3, 1, 0, BorderType.Replicate);
+            //CvInvoke.Sobel(m, dy, DepthType.Cv16S, 0, 1, 3, 1, 0, BorderType.Replicate);
+            //CvInvoke.Canny(dx, dy, canny, Math.Max(1, cannyThreshold / 2), cannyThreshold);
+            CvInvoke.Canny(m, canny, Math.Max(1, cannyThreshold / 2), cannyThreshold);
             #endregion
 
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
@@ -335,7 +337,7 @@ namespace TestsSystems_HardnessTester
             //int HY = canny.Height / H;
             //int HX = canny.Width / H;
             double angleResolutio = PI / 90.0;
-            double errorK = 0.1 * angleResolutio;
+            double errorK = 0.5 * angleResolutio;
             double errorB = Min(canny.Height, canny.Width) * 0.05;
             #endregion
 
@@ -462,17 +464,82 @@ namespace TestsSystems_HardnessTester
             }
             #endregion
 
-            if (RectsAndErrorDist.Count == 0)
+            (RotatedRect, float) savePointsS;
+            if (RectsAndErrorDist.Count != 0)
+                savePointsS = RectsAndErrorDist.Aggregate((r1, r2) => r1.Item2 <= r2.Item2 ? r1 : r2);
+            else
                 return (new RotatedRect(), float.MaxValue);
 
-            RectsAndErrorDist.Sort((x, y) =>
+            var current = CorrectionRect(savePointsS, dist_img);
+
+            return (current.Item1, current.Item2);
+        }
+
+        static private (RotatedRect, float) CorrectionRect((RotatedRect, float) savePointsS, in Matrix<float> dist_img)
+        {
+            #region уточняем 
+            Correction correction = Correction.None;
+            var current = (savePointsS.Item1, savePointsS.Item2, correction);
+            var listCorrection = new (RotatedRect, float, Correction)[9];
+            int countWhile = 0;
+            const int countWhileMax = 100;
+            while (true)
             {
-                return x.Item2.CompareTo(y.Item2);
-            });
+                listCorrection[0] = current;
+                listCorrection[0].Item3 = Correction.None;
 
-            var savePointsS = RectsAndErrorDist[0];
+                var rectCorrectionX_ = current.Item1;
+                rectCorrectionX_.Center.X += 1f;
+                listCorrection[1] = (rectCorrectionX_, ErrorDistRect(rectCorrectionX_, dist_img), Correction.X);
 
-            return savePointsS;
+                var rectCorrection_X = current.Item1;
+                rectCorrection_X.Center.X -= 1f;
+                listCorrection[2] = (rectCorrection_X, ErrorDistRect(rectCorrection_X, dist_img), Correction.X);
+
+                var rectCorrectionY_ = current.Item1;
+                rectCorrectionY_.Center.Y += 1f;
+                listCorrection[3] = (rectCorrectionY_, ErrorDistRect(rectCorrectionY_, dist_img), Correction.Y);
+
+                var rectCorrection_Y = current.Item1;
+                rectCorrection_Y.Center.Y -= 1f;
+                listCorrection[4] = (rectCorrection_Y, ErrorDistRect(rectCorrection_Y, dist_img), Correction.Y);
+
+                var rectCorrectionAngle_ = current.Item1;
+                rectCorrectionAngle_.Angle += 0.5f;
+                listCorrection[5] = (rectCorrectionAngle_, ErrorDistRect(rectCorrectionAngle_, dist_img), Correction.Rotation);
+
+                var rectCorrection_Angle = current.Item1;
+                rectCorrection_Angle.Angle -= 0.5f;
+                listCorrection[6] = (rectCorrection_Angle, ErrorDistRect(rectCorrection_Angle, dist_img), Correction.Rotation);
+
+                var rectCorrectionSide_ = current.Item1;
+                rectCorrectionSide_.Size.Width += 1f;
+                rectCorrectionSide_.Size.Height += 1f;
+                listCorrection[7] = (rectCorrectionSide_, ErrorDistRect(rectCorrectionSide_, dist_img), Correction.Side);
+
+                var rectCorrection_Side = current.Item1;
+                rectCorrection_Side.Size.Width -= 1f;
+                rectCorrection_Side.Size.Height -= 1f;
+                listCorrection[8] = (rectCorrection_Side, ErrorDistRect(rectCorrection_Side, dist_img), Correction.Side);
+
+                current = listCorrection.Aggregate((r1, r2) => r1.Item2 <= r2.Item2 ? r1 : r2);
+
+                countWhile++;
+                if (current.Item3 == Correction.None || countWhile == countWhileMax)
+                    return (current.Item1, current.Item2);
+            }
+
+            #endregion
+
+        }
+
+        enum Correction
+        {
+            Rotation,
+            X,
+            Y,
+            Side,
+            None,
         }
 
         private static float ErrorLine(System.Drawing.Point p1,System.Drawing.Point p2, in Matrix<float> mat)

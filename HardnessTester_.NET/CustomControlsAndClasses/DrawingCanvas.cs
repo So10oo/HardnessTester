@@ -44,19 +44,11 @@ namespace TestsSystems_HardnessTester
             else
                 e.Handled = true;
 
-            //if (e.ClickCount > 1)
-            //{
-            //    int d = 0;
-            //    d++;
-            //}
-          //  MessageBox.Show("1");
-
             startPoint = e.GetPosition(this);
             var _shape = VisualTreeHelper.HitTest(this, startPoint);
       
             if (!(_shape?.VisualHit is MeasuringShape))
             {
-                //var min = Math.Min(this.ActualHeight, this.ActualHeight);
                 switch (CurrentShape)
                 {
                     case SelectedShape.Square:
@@ -72,7 +64,6 @@ namespace TestsSystems_HardnessTester
                     case SelectedShape.Line:
                         {
                             CurrentMeasuringShape = CreatShape<MeasuringLine>(startPoint);
- 
                             break;
                         }
                     default: return;
@@ -330,6 +321,5 @@ namespace TestsSystems_HardnessTester
         //}
         #endregion
     }
-
 
 }

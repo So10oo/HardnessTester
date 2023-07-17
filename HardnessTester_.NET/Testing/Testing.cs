@@ -13,11 +13,11 @@ namespace TestsSystems_HardnessTester
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     internal class Testing
     {
-        readonly private List<Test> tests = new List<Test>();
+        readonly private List<Test> tests = new ();
         public double CoefficientPxtomm { get; set; } = 1.0; //коэффициент пересчёта
         public uint ProtocolNumber { get; set; } = 1;
         public string TestingMethod { get; set; } = "Бринеля";//метод тестирования
-        public string ei { get; set; } = "HB";
+        public string Ei { get; set; } = "HB";
         public string MetalGrade { get; set; } = "Test(040913)";//марка металла
         public string Gost { get; set; } = "гост,ту";//Гост Ту
         public string Melting { get; set; } = "№777";//плавка
@@ -104,7 +104,7 @@ namespace TestsSystems_HardnessTester
             table2.Rows[0].Cells[0].Paragraphs[0].Append("Образец").FontSize(12).Alignment = Alignment.center;
             table2.Rows[0].Cells[1].Paragraphs[0].Append("№").FontSize(12).Alignment = Alignment.center;
             table2.Rows[0].Cells[2].Paragraphs[0].Append("Дата").FontSize(12).Alignment = Alignment.center;
-            table2.Rows[0].Cells[3].Paragraphs[0].Append("Твердость," + ei).FontSize(12).Alignment = Alignment.center;
+            table2.Rows[0].Cells[3].Paragraphs[0].Append("Твердость," + Ei).FontSize(12).Alignment = Alignment.center;
             table2.Rows[0].Cells[4].Paragraphs[0].Append("Диагональ,мм").FontSize(12).Alignment = Alignment.center;
             table2.Rows[0].Cells[5].Paragraphs[0].Append("Разборка").FontSize(12).Alignment = Alignment.center;
 
@@ -144,11 +144,11 @@ namespace TestsSystems_HardnessTester
             double sumOfSquares = _HardnessTestList.Sum(x => Math.Pow(x - mean, 2));
             double standardDeviation = Math.Sqrt(sumOfSquares / _HardnessTestList.Count);
 
-            table3.Rows[0].Cells[0].Paragraphs[0].Append("Минимальная твердость:\t " + _HardnessTestList.Min().ToString("N2") + ei).FontSize(12);
+            table3.Rows[0].Cells[0].Paragraphs[0].Append("Минимальная твердость:\t " + _HardnessTestList.Min().ToString("N2") + Ei).FontSize(12);
             table3.Rows[0].Cells[1].Paragraphs[0].Append("Стандартное отклонение:\t 0,90").FontSize(12);
             table3.Rows[1].Cells[0].Paragraphs[0].Append("Максимальная твердость:\t " + _HardnessTestList.Max().ToString("N2")).FontSize(12);
             table3.Rows[1].Cells[1].Paragraphs[0].Append("Доверительный интервал:\t "+ standardDeviation.ToString("N2")).FontSize(12);
-            table3.Rows[2].Cells[0].Paragraphs[0].Append("Средняя твердость:\t\t " + mean.ToString("N2") + ei).FontSize(12);
+            table3.Rows[2].Cells[0].Paragraphs[0].Append("Средняя твердость:\t\t " + mean.ToString("N2") + Ei).FontSize(12);
             p3.InsertTableAfterSelf(table3);
             #endregion
 
@@ -173,7 +173,7 @@ namespace TestsSystems_HardnessTester
                     if (indexTabl4 == tests.Count) continue;
                     Test _test = tests[indexTabl4];
                     Bitmap bitmap = _test.Image;
-                    MemoryStream memoryStream = new MemoryStream();
+                    MemoryStream memoryStream = new ();
                     bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
                     var image = document.AddImage(memoryStream);
                     var picture = image.CreatePicture();
@@ -200,7 +200,7 @@ namespace TestsSystems_HardnessTester
             footer_default.InsertParagraph().InsertTableAfterSelf(tableF);
             #endregion
 
-            SaveFileDialog svg = new SaveFileDialog();
+            SaveFileDialog svg = new ();
             if (svg.ShowDialog() == true)
             {
                 document.SaveAs(svg.FileName + ".docx");

@@ -1,4 +1,5 @@
 ﻿using Emgu.CV;
+using Emgu.CV.Reg;
 using Emgu.CV.Structure;
 using Microsoft.Win32;
 using System;
@@ -6,6 +7,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,11 +24,11 @@ namespace TestsSystems_HardnessTester
     public partial class MainWindow : Window
     {
         //настройки камеры
-        readonly CaptureSettingsValue captureSettingsValue = new CaptureSettingsValue();
+        readonly CaptureSettingsValue captureSettingsValue = new();
         //настройки программы 
-        readonly ProgramSettings programSettings = new ProgramSettings();
+        readonly ProgramSettings programSettings = new();
         //Серия испытаний-тестирование 
-        readonly Testing testing = new Testing();
+        readonly Testing testing = new();
 
         public MainWindow()
         {
@@ -60,6 +62,7 @@ namespace TestsSystems_HardnessTester
 
             //логика связанная с камерой 
             capture?.Dispose();
+            Thread.Sleep(5);
             e.Cancel = false;
         }
 
@@ -103,7 +106,7 @@ namespace TestsSystems_HardnessTester
         {
             var textBox = (TextBox)(sender);
             if (!(Char.IsDigit(e.Text, 0) || (e.Text == ".")
-               && (!textBox.Text.Contains(".")
+               && (!textBox.Text.Contains('.')
                && textBox.Text.Length != 0)))
             {
                 e.Handled = true;
@@ -122,7 +125,7 @@ namespace TestsSystems_HardnessTester
 
         private void BtmOpenImage_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog()
+            OpenFileDialog ofd = new ()
             {
                 Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp"
             };
@@ -132,7 +135,7 @@ namespace TestsSystems_HardnessTester
             {
                 // VideoStop();//останавливаем видео если оно запущено
                 drawingСanvas.ClearShapes();//удаляем фигуры если они есть на панели 
-                Bitmap bitmap = new Bitmap(ofd.FileName);
+                Bitmap bitmap = new(ofd.FileName);
                 SetCaptureСontainer(bitmap.Width, bitmap.Height);
                 sreenImage.Source = ImageConverter.Bitmap2BitmappImage(bitmap);
             }
@@ -142,6 +145,8 @@ namespace TestsSystems_HardnessTester
             }
         }
 
+        Task<(RotatedRect, double)> taskSquare;
+        Task<(CircleF, double)> taskCircle;
         private void BtmFindShape_Click(object sender, RoutedEventArgs e)
         {
             VideoStop();//выключить видео если оно воспроизводится 
@@ -153,6 +158,25 @@ namespace TestsSystems_HardnessTester
                 return;
             }
 
+
+            bool taskCircleIsRunning = ( 
+                taskCircle?.Status == TaskStatus.Running ||
+                taskCircle?.Status == TaskStatus.WaitingForActivation ||
+                taskCircle?.Status == TaskStatus.WaitingToRun);
+            bool taskSquareIsRunning = (
+               taskSquare?.Status == TaskStatus.Running ||
+               taskSquare?.Status == TaskStatus.WaitingForActivation ||
+               taskSquare?.Status == TaskStatus.WaitingToRun);
+
+            if (taskSquareIsRunning || taskCircleIsRunning)  
+            {
+                txtMessageCanvas.FontSize = Math.Min(drawingСanvas.ActualHeight, drawingСanvas.ActualWidth) * 0.04;
+                txtMessageCanvas.Foreground = new SolidColorBrush(Colors.Red);
+                txtMessageCanvas.BeginAnimation(TextBlock.TextProperty, Animations.CreatStrindAnimation("Событие поиска уже идёт!", 0, 2.5));
+                return;
+            } 
+                
+
             Emgu.CV.Mat mat = ImageConverter.BitmapImage2Bitmap((BitmapImage)sreenImage.Source).ToMat();
             Emgu.CV.CvInvoke.CvtColor(mat, mat, Emgu.CV.CvEnum.ColorConversion.Bgr2Gray);
             #region поиск фигуры и отрисовка
@@ -161,12 +185,12 @@ namespace TestsSystems_HardnessTester
 
                 if (tabItemVikkers.IsSelected)
                 {
-                    var taskSquare = new Task<(RotatedRect, double)>(() =>
+                    taskSquare = new Task<(RotatedRect, double)>(() =>
                     {
                         var sq1 = FindShape.FindSquare_v2(mat);
                         return sq1;
                     });
-                    Task _taskSquare = taskSquare.ContinueWith(t =>
+                    var _taskSquare = taskSquare.ContinueWith(t =>
                     {
                         var r = t.Result.Item1;
                         Dispatcher.Invoke(() =>
@@ -179,12 +203,12 @@ namespace TestsSystems_HardnessTester
                 }
                 else if (tabItemBrinel.IsSelected)
                 {
-                    var taskCircle = new Task<(CircleF, double)>(() =>
+                    taskCircle = new Task<(CircleF, double)>(() =>
                     {
                         var cl1 = FindShape.FindCircle_v3(mat);
                         return cl1;
-                    });  
-                    Task _taskCircle = taskCircle.ContinueWith(t =>
+                    });
+                    var _taskCircle = taskCircle.ContinueWith(t =>
                     {
                         var c = t.Result.Item1;
                         Dispatcher.Invoke(() =>
@@ -193,6 +217,12 @@ namespace TestsSystems_HardnessTester
                         });
                     });
                     taskCircle.Start();
+                }
+                else
+                {
+                    txtMessageCanvas.FontSize = Math.Min(drawingСanvas.ActualHeight, drawingСanvas.ActualWidth) * 0.04;
+                    txtMessageCanvas.Foreground = new SolidColorBrush(Colors.Red);
+                    txtMessageCanvas.BeginAnimation(TextBlock.TextProperty, Animations.CreatStrindAnimation("Выберете метод поиска!", 0, 2.5));
                 }
 
                 //Task taskFind = new Task(() =>
@@ -273,11 +303,11 @@ namespace TestsSystems_HardnessTester
 
         private void BtmSaveImg_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog sfd = new SaveFileDialog();
+            SaveFileDialog sfd = new();
 
             if (sfd.ShowDialog() == true)
             {
-                if (sfd.FileName.Substring(sfd.FileName.Length - 4) != ".bmp")
+                if (sfd.FileName[0..^4] != ".bmp")
                     sfd.FileName += ".bmp";
                 ImageConverter.BitmapSource2Bitmap(border.GetImgBorder()).Save(sfd.FileName, ImageFormat.Bmp);
             }
@@ -300,7 +330,7 @@ namespace TestsSystems_HardnessTester
             }
 
             Settings windowCaptureSettings =
-                new Settings(capture, drawingСanvas, sreenImage, captureSettingsValue);
+                new(capture, drawingСanvas, sreenImage, captureSettingsValue);
             windowCaptureSettings.ShowDialog();
             //чтобы окончательно остановить процесс(почему-то после закрытия главного окна программа не выходит из отладки)
             windowCaptureSettings.Close();
@@ -312,7 +342,7 @@ namespace TestsSystems_HardnessTester
                 return;
             try
             {
-                Test test = new Test()
+                Test test = new ()
                 {
                     SizeTest = drawingСanvas.GetSizeShape() * testing.CoefficientPxtomm,
                     Image = ImageConverter.BitmapSource2Bitmap(border.GetImgBorder()),
@@ -359,7 +389,7 @@ namespace TestsSystems_HardnessTester
                 return;
             try
             {
-                Test test = new Test()
+                Test test = new ()
                 {
                     SizeTest = drawingСanvas.GetSizeShape() * testing.CoefficientPxtomm,
                     Image = ImageConverter.BitmapSource2Bitmap(border.GetImgBorder()),
@@ -381,12 +411,12 @@ namespace TestsSystems_HardnessTester
             if (tabItemVikkers.IsSelected)
             {
                 testing.TestingMethod = "Виккерса";
-                testing.ei = "HB";
+                testing.Ei = "HB";
             }
             else if (tabItemBrinel.IsSelected)
             {
                 testing.TestingMethod = "Бринеля";
-                testing.ei = "HV";
+                testing.Ei = "HV";
             }
             testing.CreateProtocol();
         }
@@ -397,7 +427,7 @@ namespace TestsSystems_HardnessTester
 
         #endregion
 
-        private void textBoxСalibration_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void TextBoxСalibration_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
                 BtmSetupСalibration_Click(null, null);
