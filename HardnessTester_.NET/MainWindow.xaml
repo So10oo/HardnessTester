@@ -297,7 +297,7 @@
                             <TextBox x:Name="textBoxСalibration" Text="1"
                                      Grid.Column="1" Margin="2,0,2,0"
                                     HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                                   Style="{StaticResource TextBoxStyle}" KeyDown="textBoxСalibration_KeyDown"
+                                   Style="{StaticResource TextBoxStyle}" KeyDown="TextBoxСalibration_KeyDown"
                                       PreviewTextInput="TextBox_PreviewTextInput"/>
                             <TextBlock Text="mm"
                                        Grid.Column="2" Margin="2,0,0,0" Style="{StaticResource TextBlockStyle}"
