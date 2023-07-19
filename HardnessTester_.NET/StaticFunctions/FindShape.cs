@@ -478,54 +478,54 @@ namespace TestsSystems_HardnessTester
         static private (RotatedRect, float) CorrectionRect((RotatedRect, float) savePointsS, in Matrix<float> dist_img)
         {
             #region уточняем 
-            Correction correction = Correction.None;
+            CorrectionR correction = CorrectionR.None;
             var current = (savePointsS.Item1, savePointsS.Item2, correction);
-            var listCorrection = new (RotatedRect, float, Correction)[9];
+            var listCorrection = new (RotatedRect, float, CorrectionR)[9];
             int countWhile = 0;
             const int countWhileMax = 100;
             while (true)
             {
                 listCorrection[0] = current;
-                listCorrection[0].Item3 = Correction.None;
+                listCorrection[0].Item3 = CorrectionR.None;
 
                 var rectCorrectionX_ = current.Item1;
                 rectCorrectionX_.Center.X += 1f;
-                listCorrection[1] = (rectCorrectionX_, ErrorDistRect(rectCorrectionX_, dist_img), Correction.X);
+                listCorrection[1] = (rectCorrectionX_, ErrorDistRect(rectCorrectionX_, dist_img), CorrectionR.X);
 
                 var rectCorrection_X = current.Item1;
                 rectCorrection_X.Center.X -= 1f;
-                listCorrection[2] = (rectCorrection_X, ErrorDistRect(rectCorrection_X, dist_img), Correction.X);
+                listCorrection[2] = (rectCorrection_X, ErrorDistRect(rectCorrection_X, dist_img), CorrectionR.X);
 
                 var rectCorrectionY_ = current.Item1;
                 rectCorrectionY_.Center.Y += 1f;
-                listCorrection[3] = (rectCorrectionY_, ErrorDistRect(rectCorrectionY_, dist_img), Correction.Y);
+                listCorrection[3] = (rectCorrectionY_, ErrorDistRect(rectCorrectionY_, dist_img), CorrectionR.Y);
 
                 var rectCorrection_Y = current.Item1;
                 rectCorrection_Y.Center.Y -= 1f;
-                listCorrection[4] = (rectCorrection_Y, ErrorDistRect(rectCorrection_Y, dist_img), Correction.Y);
+                listCorrection[4] = (rectCorrection_Y, ErrorDistRect(rectCorrection_Y, dist_img), CorrectionR.Y);
 
                 var rectCorrectionAngle_ = current.Item1;
                 rectCorrectionAngle_.Angle += 0.5f;
-                listCorrection[5] = (rectCorrectionAngle_, ErrorDistRect(rectCorrectionAngle_, dist_img), Correction.Rotation);
+                listCorrection[5] = (rectCorrectionAngle_, ErrorDistRect(rectCorrectionAngle_, dist_img), CorrectionR.Rotation);
 
                 var rectCorrection_Angle = current.Item1;
                 rectCorrection_Angle.Angle -= 0.5f;
-                listCorrection[6] = (rectCorrection_Angle, ErrorDistRect(rectCorrection_Angle, dist_img), Correction.Rotation);
+                listCorrection[6] = (rectCorrection_Angle, ErrorDistRect(rectCorrection_Angle, dist_img), CorrectionR.Rotation);
 
                 var rectCorrectionSide_ = current.Item1;
                 rectCorrectionSide_.Size.Width += 1f;
                 rectCorrectionSide_.Size.Height += 1f;
-                listCorrection[7] = (rectCorrectionSide_, ErrorDistRect(rectCorrectionSide_, dist_img), Correction.Side);
+                listCorrection[7] = (rectCorrectionSide_, ErrorDistRect(rectCorrectionSide_, dist_img), CorrectionR.Side);
 
                 var rectCorrection_Side = current.Item1;
                 rectCorrection_Side.Size.Width -= 1f;
                 rectCorrection_Side.Size.Height -= 1f;
-                listCorrection[8] = (rectCorrection_Side, ErrorDistRect(rectCorrection_Side, dist_img), Correction.Side);
+                listCorrection[8] = (rectCorrection_Side, ErrorDistRect(rectCorrection_Side, dist_img), CorrectionR.Side);
 
                 current = listCorrection.Aggregate((r1, r2) => r1.Item2 <= r2.Item2 ? r1 : r2);
 
                 countWhile++;
-                if (current.Item3 == Correction.None || countWhile == countWhileMax)
+                if (current.Item3 == CorrectionR.None || countWhile == countWhileMax)
                     return (current.Item1, current.Item2);
             }
 
@@ -533,7 +533,7 @@ namespace TestsSystems_HardnessTester
 
         }
 
-        enum Correction
+        enum CorrectionR
         {
             Rotation,
             X,
@@ -845,6 +845,134 @@ namespace TestsSystems_HardnessTester
 
             #endregion
         }
+
+        public static (CircleF, double) FindCircle_v4(Mat m,System.Windows.Point point)
+        {
+            #region фильтры
+            CvInvoke.BilateralFilter(m.Clone(), m, -1, 15, 15, Emgu.CV.CvEnum.BorderType.Constant);
+            CvInvoke.MedianBlur(m, m, 15);
+            CvInvoke.MedianBlur(m, m, 15);
+            #endregion
+
+            #region возможно тут будет сложное вычисление порогового значения 
+            Mat edges = new Mat(m.Height, m.Width, DepthType.Cv8U, 1);//(m.Size, DepthType.Cv8U, 1);
+            Mat dx = new Mat();
+            Mat dy = new Mat();
+            var cannyThreshold = 70;
+            //CvInvoke.Sobel(m, dx, DepthType.Cv16S, 1, 0, 3, 1, 0, BorderType.Replicate);
+            //CvInvoke.Sobel(m, dy, DepthType.Cv16S, 0, 1, 3, 1, 0, BorderType.Replicate);
+            //CvInvoke.Canny(dx, dy, edges, Math.Max(1, cannyThreshold / 2), cannyThreshold);
+            CvInvoke.Canny(m, edges, Math.Max(1, cannyThreshold / 2), cannyThreshold);
+            #endregion
+
+            #region расстояние в глобальные переменные 
+            Mat temp = new Mat();
+            var dist_img = new Matrix<float>(edges.Rows, edges.Cols);
+            CvInvoke.BitwiseNot(edges, temp);
+            CvInvoke.DistanceTransform(temp, dist_img, null, DistType.L2, 5);
+            #endregion
+
+            #region находим окружности
+            double circleAccumulatorThreshold = 150;
+            CircleF[] circles = CvInvoke.HoughCircles(m, HoughModes.Gradient, 2.0, 1, cannyThreshold,
+        circleAccumulatorThreshold, minRadius: Math.Min(m.Width, m.Height) / 20, maxRadius: Math.Min(m.Width, m.Height) / 2);
+            #endregion
+
+            #region сортируем окружности  
+            var circleListAndError = new List<(CircleF, float)>();
+            for (int i = 0; i < circles.Length; i++)
+                circleListAndError.Add((circles[i], ErrorDistCircleMichner(circles[i], in dist_img)));
+
+            if (circleListAndError.Count == 0)
+                return (new CircleF(), float.MaxValue);
+
+            (CircleF, float) cl1 = (new CircleF(new PointF(-1, -1), 0.5f), float.MaxValue); //circleListAndError.Aggregate((c1, c2) => c1.Item2 < c2.Item2 ? c1 : c2);
+            float error = float.MaxValue;
+            bool isFind = false;
+            for (int i = 1; i < circleListAndError.Count; i++)
+            {
+                var c = circleListAndError[i].Item1;
+                var x = c.Center.X;
+                var y = c.Center.Y;
+                var r = c.Radius;
+                bool isCrl = (point.X > (x - r)) && (point.Y > (y - r)) && (point.X < (x + r)) && (point.Y < (y + r));
+                if (isCrl && (error > circleListAndError[i].Item2))
+                {
+                    error = circleListAndError[i].Item2;
+                    cl1 = circleListAndError[i];
+                    isFind = true;
+                }
+            }
+
+            if (isFind)
+                return CorrectionCirl(cl1,dist_img);
+            else
+            {
+                var c = circleListAndError.Aggregate((c1, c2) => c1.Item2 < c2.Item2 ? c1 : c2);
+                return CorrectionCirl(c, dist_img);
+            }
+            #endregion
+
+        }
+
+        static private (CircleF, float) CorrectionCirl((CircleF, float) savePointsC, in Matrix<float> dist_img)
+        {
+            #region уточняем 
+            CorrectionC correction = CorrectionC.None;
+            var current = (savePointsC.Item1, savePointsC.Item2, correction);
+            var listCorrection = new (CircleF, float, CorrectionC)[7];
+            int countWhile = 0;
+            const int countWhileMax = 100;
+            while (true)
+            {
+                listCorrection[0] = current;
+                listCorrection[0].Item3 = CorrectionC.None;
+
+                var cirlCorrectionX_ = current.Item1;
+                //cirlCorrectionX_.Center.X += 1f;
+                cirlCorrectionX_.Center = new PointF(cirlCorrectionX_.Center.X - 1f, cirlCorrectionX_.Center.Y);
+                listCorrection[1] = (cirlCorrectionX_, ErrorDistCircleMichner(cirlCorrectionX_, dist_img), CorrectionC.X);
+
+                var cirlCorrection_X = current.Item1;
+                cirlCorrection_X.Center = new PointF(cirlCorrection_X.Center.X + 1f, cirlCorrection_X.Center.Y);
+                listCorrection[2] = (cirlCorrection_X, ErrorDistCircleMichner(cirlCorrection_X, dist_img), CorrectionC.X);
+
+                var cirlCorrectionY_ = current.Item1;
+                cirlCorrectionY_.Center = new PointF(cirlCorrectionY_.Center.X, cirlCorrectionY_.Center.Y - 1f);
+                listCorrection[3] = (cirlCorrectionY_, ErrorDistCircleMichner(cirlCorrectionY_, dist_img), CorrectionC.Y);
+
+                var cirlCorrection_Y = current.Item1;
+                cirlCorrection_Y.Center = new PointF(cirlCorrection_Y.Center.X, cirlCorrection_Y.Center.Y + 1f);
+                listCorrection[4] = (cirlCorrection_Y, ErrorDistCircleMichner(cirlCorrection_Y, dist_img), CorrectionC.Y);
+
+                var cirlCorrectionR_ = current.Item1;
+                cirlCorrectionR_.Radius += 1f;
+                listCorrection[5] = (cirlCorrectionR_, ErrorDistCircleMichner(cirlCorrectionR_, dist_img), CorrectionC.Side);
+
+                var cirlCorrection_R = current.Item1;
+                cirlCorrection_R.Radius -= 1f;
+                listCorrection[6] = (cirlCorrection_R, ErrorDistCircleMichner(cirlCorrection_R, dist_img), CorrectionC.Side);
+
+                current = listCorrection.Aggregate((r1, r2) => r1.Item2 <= r2.Item2 ? r1 : r2);
+
+                countWhile++;
+                if (current.Item3 == CorrectionC.None || countWhile == countWhileMax)
+                    return (current.Item1, current.Item2);
+            }
+
+            #endregion
+
+        }
+
+        enum CorrectionC
+        {
+            Rotation,
+            X,
+            Y,
+            Side,
+            None,
+        }
+
 
         private static float ErrorDistCircleMichner(CircleF c, in Matrix<float> mat)
         {

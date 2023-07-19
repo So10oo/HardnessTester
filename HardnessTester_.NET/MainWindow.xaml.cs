@@ -432,6 +432,93 @@ namespace TestsSystems_HardnessTester
             if (e.Key == Key.Enter)
                 BtmSetupСalibration_Click(null, null);
         }
+
+        private void drawingСanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
+            {
+                var pointClick = e.GetPosition((Canvas)sender);
+
+                VideoStop();//выключить видео если оно воспроизводится 
+                if (sreenImage.Source == null)
+                {
+                    txtMessageCanvas.FontSize = Math.Min(drawingСanvas.ActualHeight, drawingСanvas.ActualWidth) * 0.04;
+                    txtMessageCanvas.Foreground = new SolidColorBrush(Colors.Red);
+                    txtMessageCanvas.BeginAnimation(TextBlock.TextProperty, Animations.CreatStrindAnimation("Изображение не было найдено!", 0, 2.5));
+                    return;
+                }
+                bool taskCircleIsRunning = (
+                    taskCircle?.Status == TaskStatus.Running ||
+                    taskCircle?.Status == TaskStatus.WaitingForActivation ||
+                    taskCircle?.Status == TaskStatus.WaitingToRun);
+                bool taskSquareIsRunning = (
+                   taskSquare?.Status == TaskStatus.Running ||
+                   taskSquare?.Status == TaskStatus.WaitingForActivation ||
+                   taskSquare?.Status == TaskStatus.WaitingToRun);
+                if (taskSquareIsRunning || taskCircleIsRunning)
+                {
+                    txtMessageCanvas.FontSize = Math.Min(drawingСanvas.ActualHeight, drawingСanvas.ActualWidth) * 0.04;
+                    txtMessageCanvas.Foreground = new SolidColorBrush(Colors.Red);
+                    txtMessageCanvas.BeginAnimation(TextBlock.TextProperty, Animations.CreatStrindAnimation("Событие поиска уже идёт!", 0, 2.5));
+                    return;
+                }
+
+
+                Emgu.CV.Mat mat = ImageConverter.BitmapImage2Bitmap((BitmapImage)sreenImage.Source).ToMat();
+                Emgu.CV.CvInvoke.CvtColor(mat, mat, Emgu.CV.CvEnum.ColorConversion.Bgr2Gray);
+                #region поиск фигуры и отрисовка
+                try
+                {
+                    if (tabItemVikkers.IsSelected)
+                    {
+                        //taskSquare = new Task<(RotatedRect, double)>(() =>
+                        //{
+                        //    var sq1 = FindShape.FindSquare_v3(mat, pointClick);
+                        //    return sq1;
+                        //});
+                        //var _taskSquare = taskSquare.ContinueWith(t =>
+                        //{
+                        //    var r = t.Result.Item1;
+                        //    Dispatcher.Invoke(() =>
+                        //    {
+                        //        drawingСanvas.PaintSquare(r.Size.Width, r.Angle, r.Center.X, r.Center.Y);
+                        //    });
+                        //});
+                        //taskSquare.Start();
+
+                    }
+                    else if (tabItemBrinel.IsSelected)
+                    {
+                        taskCircle = new Task<(CircleF, double)>(() =>
+                        {
+                            var cl1 = FindShape.FindCircle_v4(mat, pointClick);
+                            return cl1;
+                        });
+                        var _taskCircle = taskCircle.ContinueWith(t =>
+                        {
+                            var c = t.Result.Item1;
+                            Dispatcher.Invoke(() =>
+                            {
+                                drawingСanvas.PaintCircle(c.Radius, c.Center.X, c.Center.Y);
+                            });
+                        });
+                        taskCircle.Start();
+                    }
+                    else
+                    {
+                        txtMessageCanvas.FontSize = Math.Min(drawingСanvas.ActualHeight, drawingСanvas.ActualWidth) * 0.04;
+                        txtMessageCanvas.Foreground = new SolidColorBrush(Colors.Red);
+                        txtMessageCanvas.BeginAnimation(TextBlock.TextProperty, Animations.CreatStrindAnimation("Выберете метод поиска!", 0, 2.5));
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                #endregion
+            }
+        }
     }
 
 }
