@@ -471,20 +471,20 @@ namespace TestsSystems_HardnessTester
                 {
                     if (tabItemVikkers.IsSelected)
                     {
-                        //taskSquare = new Task<(RotatedRect, double)>(() =>
-                        //{
-                        //    var sq1 = FindShape.FindSquare_v3(mat, pointClick);
-                        //    return sq1;
-                        //});
-                        //var _taskSquare = taskSquare.ContinueWith(t =>
-                        //{
-                        //    var r = t.Result.Item1;
-                        //    Dispatcher.Invoke(() =>
-                        //    {
-                        //        drawingСanvas.PaintSquare(r.Size.Width, r.Angle, r.Center.X, r.Center.Y);
-                        //    });
-                        //});
-                        //taskSquare.Start();
+                        taskSquare = new Task<(RotatedRect, double)>(() =>
+                        {
+                            var sq1 = FindShape.FindSquare_v3(mat, pointClick);
+                            return sq1;
+                        });
+                        var _taskSquare = taskSquare.ContinueWith(t =>
+                        {
+                            var r = t.Result.Item1;
+                            Dispatcher.Invoke(() =>
+                            {
+                                drawingСanvas.PaintSquare(r.Size.Width, r.Angle, r.Center.X, r.Center.Y);
+                            });
+                        });
+                        taskSquare.Start();
 
                     }
                     else if (tabItemBrinel.IsSelected)
