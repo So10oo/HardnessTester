@@ -162,7 +162,7 @@ namespace TestsSystems_HardnessTester
                 {
                     var taskSquare = new Task<(RotatedRect, double)>(() =>
                     {
-                        var sq1 = FindShape.FindSquare_v2(mat);
+                        var sq1 = FindShape.FindSquare_v1(mat);
                         return sq1;
                     });
                     Task _taskSquare = taskSquare.ContinueWith(t =>

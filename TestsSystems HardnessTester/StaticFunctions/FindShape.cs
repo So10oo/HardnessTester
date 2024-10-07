@@ -14,7 +14,7 @@ namespace TestsSystems_HardnessTester
     {
         #region для квадрата
 
-        public static RotatedRect FindSquare_v1(Mat image)
+        public static (RotatedRect, float) FindSquare_v1(Mat image)
         {
             Mat src = image.Clone();
             Mat temp = src.Clone();
@@ -292,7 +292,7 @@ namespace TestsSystems_HardnessTester
             #endregion  
 
             #region рисуем
-            return FinalRectList[0].Item1;
+            return (FinalRectList[0].Item1,1);
             #endregion
 
         }
